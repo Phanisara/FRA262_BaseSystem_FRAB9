@@ -17,12 +17,17 @@ class OrderEntry():
         self.inner_rec = RoundRectangle(canvas=self.canvas, x=self.x+2, y=self.y+2, w=self.w-4, h=self.h-4, r=2, color=Color.whitegray)
         self.os = platform.platform()[0].upper()
         if self.os == 'M':  # Mac
-            self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font="Inter-SemiBold", fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var)
+            self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font="Inter-SemiBold", fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var, validate="key", validatecommand=(self.canvas.register(self.validate_number),
+        '%P', '%S'))
         elif self.os == 'W':  # Windows
-            self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font=("Inter SemiBold", 9), fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var)
+            self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font=("Inter SemiBold", 9), fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var, validate="key", validatecommand=(self.canvas.register(self.validate_number),
+        '%P', '%S'))
         self.entry_window = self.canvas.create_window(self.x+(self.w/2), self.y+(self.h/2), window=self.entry)
         self.entry.bind("<Configure>", self.entry.config(width=self.w // 10))
         self.set_text("0")
+    
+    def validate_number(self, current_value, new_value):
+        return new_value.isdigit() and len(str(current_value)) < 2
     
     def hide(self):
         self.outer_rec.hide()
