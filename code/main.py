@@ -5,7 +5,6 @@ import time
 
 from components.color import Color
 from components.grid import Grid
-from components.tray import Tray
 from components.target import Target
 from components.navigator import Navigator
 from components.button import PressButton, RadioButton, ToggleButton, StatusButton
@@ -13,7 +12,7 @@ from components.shape import RoundRectangle, Line
 from components.text import TextBox, MessageBox, Error
 from components.photo import Photo
 from components.entry import Entry, OrderEntry
-from BaseSystem.code.protocol import Protocol_Y, Protocol_X
+from protocol import Protocol_Y, Protocol_X
 
 class App(tk.Tk):
     def __init__(self):
