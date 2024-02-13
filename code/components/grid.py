@@ -52,7 +52,7 @@ class Grid():
             y = event.y
 
             # Check if the click event occurs within the grid boundaries
-            if (self.offset_x + 10) <= x < (self.offset_x + self.column * 10) and (self.offset_y + 10) <= y < (self.offset_y + self.row * 10 - 10):
+            if (self.offset_x + 10) <= x < (self.offset_x + self.column * 10) and (self.offset_y + 10) <= y <= (self.offset_y + self.row * 10 - 10):
                 x_intersection = (x // 10) * 10
                 y_intersection = ((y // 10) * 10) + 5
 
@@ -70,8 +70,25 @@ class Grid():
                 z_value = 705 - y_intersection
                 self.saved_position = (x_value, z_value)
                 print(f"Clicked at grid (x={x_value}, z={z_value})")
+                return x_value, z_value
+            else:
+                return None, None
+    
+    def show_point(self, position_z, operation_mode):
+        if operation_mode == 'Point':
+            # Check if the click event occurs within the grid boundaries
+            if (self.offset_y + 10) <= 705 - int(position_z) <= (self.offset_y + self.row * 10 - 10):
+                position_z = int(position_z)
+                # Clear the previous dot
+                if self.previous_dot:
+                    self.canvas.delete(self.previous_dot)
+
+                # Draw a red dot at the intersection of grid lines
+                dot = self.canvas.create_oval(198, 703 - position_z, 202, 707 - position_z, fill="red", outline = "red")
+                self.previous_dot = dot
+
+                z_value = 705 + position_z
+                print(f"Entry the position (x=0, z={z_value})")
                 return z_value
-            
             else:
                 return None
-        
