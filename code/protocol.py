@@ -51,9 +51,9 @@ class Binary():
             number = number - (1 << 16)  # Subtract 2^16 from the number
         return number
 
-class Protocol_Y(Binary):
+class Protocol_Z(Binary):
     """
-    Protocol Y Class
+    Protocol Z Class
     """
     def __init__(self):
         self.os = platform.platform()[0].upper()
@@ -70,15 +70,15 @@ class Protocol_Y(Binary):
         
         self.routine_normal = True
 
-        self.laser_on = "0"
+        self.vacuum_on = "0"
         self.gripper_power = "0"
         self.gripper_pick = "0"
         self.gripper_place = "0"
-        self.y_axis_moving_status_before = "Idle"
-        self.y_axis_moving_status = "Idle"
-        self.y_axis_actual_pos = 0.0
-        self.y_axis_actual_spd = 0.0
-        self.y_axis_actual_acc = 0.0
+        self.z_axis_moving_status_before = "Idle"
+        self.z_axis_moving_status = "Idle"
+        self.z_axis_actual_pos = 0.0
+        self.z_axis_actual_spd = 0.0
+        self.z_axis_actual_acc = 0.0
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
 
@@ -107,13 +107,13 @@ class Protocol_Y(Binary):
         try:
             self.register = self.client.read_holding_registers(address=0x00, count=0x46, slave=self.slave_address).registers
             self.read_end_effector_status()
-            self.read_y_axis_moving_status()
+            self.read_z_axis_moving_status()
             self.read_x_axis_moving_status()
-            self.read_y_axis_actual_motion()
-            print("Laser:", self.laser_on)
+            self.read_z_axis_actual_motion()
+            print("Vacuum:", self.vacuum_on)
             print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
-            print("Pos:", self.y_axis_actual_pos, "\tSpd:", self.y_axis_actual_spd, "\tAcc:", self.y_axis_actual_acc)
-            print("Y-Axis Moving:", self.y_axis_moving_status)
+            print("Pos:", self.z_axis_actual_pos, "\tSpd:", self.z_axis_actual_spd, "\tAcc:", self.z_axis_actual_acc)
+            print("Z-Axis Moving:", self.z_axis_moving_status)
             print("X-Axis Moving:", self.x_axis_moving_status)
             self.routine_normal = True
         except Exception as e:
@@ -151,7 +151,7 @@ class Protocol_Y(Binary):
 
     def read_end_effector_status(self):
         end_effector_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x02]))[::-1]
-        self.laser_on      = end_effector_status_binary[0]
+        self.vacuum_on      = end_effector_status_binary[0]
         self.gripper_power = end_effector_status_binary[1]
         self.gripper_pick  = end_effector_status_binary[2]
         self.gripper_place = end_effector_status_binary[3]
@@ -171,50 +171,34 @@ class Protocol_Y(Binary):
             self.end_effector_status_register = 0b1010
         self.client.write_register(address=0x02, value=self.end_effector_status_register, slave=self.slave_address)
 
-    def read_y_axis_moving_status(self):
-        self.y_axis_moving_status_before = self.y_axis_moving_status
-        y_axis_moving_status_binary = self.binary_crop(6, self.decimal_to_binary(self.register[0x10]))[::-1]
-        if y_axis_moving_status_binary[0] == "1":
-            self.y_axis_moving_status = "Jog Pick"
-        elif y_axis_moving_status_binary[1] == "1":
-            self.y_axis_moving_status = "Jog Place"
-        elif y_axis_moving_status_binary[2] == "1":
-            self.y_axis_moving_status = "Home"
-        elif y_axis_moving_status_binary[3] == "1":
-            self.y_axis_moving_status = "Go Pick"
-        elif y_axis_moving_status_binary[4] == "1":
-            self.y_axis_moving_status = "Go Place"
-        elif y_axis_moving_status_binary[5] == "1":
-            self.y_axis_moving_status = "Go Point"
+    def read_z_axis_moving_status(self):
+        self.z_axis_moving_status_before = self.z_axis_moving_status
+        z_axis_moving_status_binary = self.binary_crop(6, self.decimal_to_binary(self.register[0x10]))[::-1]
+        if z_axis_moving_status_binary[0] == "1":
+            self.z_axis_moving_status = "Jog Pick"
+        elif z_axis_moving_status_binary[1] == "1":
+            self.z_axis_moving_status = "Jog Place"
+        elif z_axis_moving_status_binary[2] == "1":
+            self.z_axis_moving_status = "Home"
+        elif z_axis_moving_status_binary[3] == "1":
+            self.z_axis_moving_status = "Go Pick"
+        elif z_axis_moving_status_binary[4] == "1":
+            self.z_axis_moving_status = "Go Place"
+        elif z_axis_moving_status_binary[5] == "1":
+            self.z_axis_moving_status = "Go Point"
         else:
-            self.y_axis_moving_status = "Idle"
+            self.z_axis_moving_status = "Idle"
 
-    def read_y_axis_actual_motion(self):
-        self.y_axis_actual_pos = self.binary_reverse_twos_complement(self.register[0x11]) / 10
-        self.y_axis_actual_spd = self.register[0x12] / 10
-        self.y_axis_actual_acc = self.register[0x13] / 10
+    def read_z_axis_actual_motion(self):
+        self.z_axis_actual_pos = self.binary_reverse_twos_complement(self.register[0x11]) / 10
+        self.z_axis_actual_spd = self.register[0x12] / 10
+        self.z_axis_actual_acc = self.register[0x13] / 10
 
-    def read_pick_tray_position(self):
-        # Origin x
-        self.pick_tray_origin_x = self.binary_reverse_twos_complement(self.register[0x20]) / 10
-        # Origin y
-        self.pick_tray_origin_y = self.binary_reverse_twos_complement(self.register[0x21]) / 10
-        # Orientation
-        self.pick_tray_orientation = self.register[0x22] / 100
-
-    def read_place_tray_position(self):
-        # Origin x
-        self.place_tray_origin_x = self.binary_reverse_twos_complement(self.register[0x23]) / 10
-        # Origin y
-        self.place_tray_origin_y = self.binary_reverse_twos_complement(self.register[0x24]) / 10
-        # Orientation
-        self.place_tray_orientation = self.register[0x25] / 100
-
-    def write_goal_point(self, x, y):
+    def write_goal_point(self, x, z):
         self.goal_point_x_register = self.binary_twos_complement(int(x*10))
-        self.goal_point_y_register = self.binary_twos_complement(int(y*10))
+        self.goal_point_z_register = self.binary_twos_complement(int(z*10))
         self.client.write_register(address=0x30, value=self.goal_point_x_register, slave=self.slave_address)
-        self.client.write_register(address=0x31, value=self.goal_point_y_register, slave=self.slave_address)
+        self.client.write_register(address=0x31, value=self.goal_point_z_register, slave=self.slave_address)
 
     def read_x_axis_moving_status(self):
         self.x_axis_moving_status_before = self.x_axis_moving_status
