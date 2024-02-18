@@ -54,23 +54,18 @@ class MessageBox():
         self.r = 6
         self.color = color
         self.font_name = font_name
-        self.rectangle_box = RoundRectangle(canvas=self.canvas, x=self.x+(width_field / 2)-(self.w / 2)+40, y=self.y, w=self.w, h=self.h, r=self.r, color=self.color)
-        self.textbox = TextBox(canvas=self.canvas, x=self.x+(width_field/2), y=self.y + (self.h/2), font_name=self.font_name, text=self.text, font_size=self.size, color=Color.white, anchor="center")
+        self.textbox = TextBox(canvas=self.canvas, x=self.x+(width_field/2), y=self.y + (self.h/2), font_name=self.font_name, text=self.text, font_size=self.size, color=Color.red, anchor="center")
 
     def hide(self):
-        self.rectangle_box.hide()
         self.textbox.hide()
 
     def show(self):
-        self.rectangle_box.show()
         self.textbox.show()
 
     def change_text(self, text):
         self.textbox.change_text(text)
         self.text = text
         self.w = int(len(self.text) * 5)
-        self.rectangle_box.resize(w=self.w, h=self.h)
 
 class Error:
-    code_1  = "Input for Point Mode cannot be empty"
-    code_2  = "Input for Point Mode over the limit"
+    code_point_1  = "\" Input for Point Mode Exceed The Limit 600 \""
