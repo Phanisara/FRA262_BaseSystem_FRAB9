@@ -1,4 +1,5 @@
 import platform
+import re
 import tkinter as tk
 from components.color import Color
 from components.shape import RoundRectangle
@@ -58,35 +59,6 @@ class OrderEntry():
     def get_value(self):
         return self.entry.get()
 
-    def validate(self, value, limit):
-        """
-        Parameters
-            value (str) : Entry's value 
-            limit (int) : Limit of entry's value
-        
-        Return
-            Error code (int) : Error code where
-                0 = Normal
-                1 = Error Empty value
-                2 = Error over limit
-        """
-        valid_character = "123456789"
-
-        value = str(value)
-
-        # Remove blank space
-        value = value.replace(" ", "")
-        
-        # Check if the value not is number
-        if value not in valid_character:
-            return 1
-            
-        # Check if value is over limit
-        if len(value) > limit:
-            return 2
-
-        return 0
-
 class Entry():
     def __init__(self, master, canvas, x, y, w, h, color):
         self.master = master
@@ -141,3 +113,27 @@ class Entry():
 
     def get_value(self):
         return self.entry.get()
+    
+    def validate(self, value):
+        """
+        Parameters
+            value (str) : Entry's value 
+            limit (int) : Limit of entry's value
+        
+        Return
+            Error code (int) : Error code where
+                0 = Normal
+                1 = Error number exceed limit value
+        """
+        valid_character = "0123456789"
+
+        value = str(value)
+
+        # Remove blank space
+        value = value.replace(" ", "")
+        
+        if value != "":
+            if int(value) > 600:
+                return 1
+
+        return 0
