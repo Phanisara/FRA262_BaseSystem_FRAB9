@@ -68,14 +68,24 @@ class Grid():
                 # Save the x and y-axis values
                 x_value = x_intersection - 200
                 z_value = 705 - y_intersection
+                grid_flag = True
                 self.saved_position = (x_value, z_value)
-                print(f"Clicked at grid (x={x_value}, z={z_value})")
-                return x_value, z_value
+                return x_value, z_value, dot, grid_flag
             else:
-                return None, None
+                x_value = None
+                z_value = None
+                dot = None
+                grid_flag = False
+                return x_value, z_value, dot, grid_flag
+        else:
+            x_value = None
+            z_value = None
+            dot = None
+            grid_flag = False
+            return x_value, z_value, dot, grid_flag
     
     def show_point(self, position_z, operation_mode):
-        if operation_mode == 'Point':
+        if operation_mode == 'Point' and position_z != '':
             # Check if the click event occurs within the grid boundaries
             if (self.offset_y + 10) <= 705 - int(position_z) <= (self.offset_y + self.row * 10 - 10):
                 position_z = int(position_z)
@@ -87,8 +97,19 @@ class Grid():
                 dot = self.canvas.create_oval(198, 703 - position_z, 202, 707 - position_z, fill="red", outline = "red")
                 self.previous_dot = dot
 
-                z_value = 705 + position_z
-                print(f"Entry the position (x=0, z={z_value})")
-                return z_value
+                x_value = 0
+                z_value = position_z
+                return x_value, z_value, dot
             else:
-                return None
+                x_value = None
+                z_value = None
+                dot = None
+                return x_value, z_value, dot
+        else:
+            x_value = None
+            z_value = None
+            dot = None
+            return x_value, z_value, dot
+    
+    def delete_point(self, dot):
+        self.canvas.delete(dot)
