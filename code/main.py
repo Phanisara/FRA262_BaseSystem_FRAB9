@@ -12,7 +12,7 @@ from components.shape import RoundRectangle, Line
 from components.text import TextBox, MessageBox, Error
 from components.photo import Photo
 from components.entry import Entry, OrderEntry
-from protocol import Protocol_Y, Protocol_X
+from protocol import Protocol_Z, Protocol_X
 
 class App(tk.Tk):
     def __init__(self):
@@ -40,7 +40,7 @@ class App(tk.Tk):
         self.time_ms_y = 0
         self.time_ms_x = 0
         # Prepare Protocol
-        self.protocol_y = Protocol_Y()
+        self.protocol_z = Protocol_Z()
         self.protocol_x = Protocol_X()
         self.connection = True
         self.new_connection = True
@@ -53,7 +53,9 @@ class App(tk.Tk):
         # Handle Buttons
         self.handle_toggle_vacuum()
         self.handle_radio_operation()
-
+        self.handle_press_home()
+        self.handle_press_run()
+        
         # if self.mode == "Graphic":
         #     # Handle graphic mode only
         #     self.handle_graphic()
@@ -61,12 +63,12 @@ class App(tk.Tk):
         if self.mode == "Protocol":
             # Handle y-axis protocol
             self.start_time = time.time()
-            self.handle_protocol_y()
+            self.handle_protocol_z()
             # Handle x-axis protocol
             self.handle_protocol_x()
 
         # Validate Entry Value
-        # self.validate_entry()
+        self.validate_entry()
 
         # Loop every 10 ms
         self.after(10, self.task)
@@ -85,9 +87,10 @@ class App(tk.Tk):
             font_size_grid = 9
             font_size_sub_grid = 8
             font_size_unit_grid = 6
-            font_size_button_small = 12
-            font_size_button_home = 15
-            font_size_button_run = 22
+            font_size_button_small = 9
+            font_size_button_home = 12
+            font_size_button_run = 17
+            font_size_message_error = 7
         elif self.os == "W": # Windows
             font_size_title = 14
             font_size_subtitle = 11
@@ -143,9 +146,9 @@ class App(tk.Tk):
         self.text_z_acc_unit = TextBox(canvas=self.canvas_field, x=630, y=240, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
         self.text_z_acc_2= TextBox(canvas=self.canvas_field, x=660, y=235, text="2", font_name="Inter-Regular", font_size=5, color=Color.darkgray, anchor="w")
         self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=570, y=165,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_y_pos_num = TextBox(canvas=self.canvas_field, x=570, y=190,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_y_spd_num = TextBox(canvas=self.canvas_field, x=570, y=215,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_y_acc_num = TextBox(canvas=self.canvas_field, x=570, y=240,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_pos_num = TextBox(canvas=self.canvas_field, x=570, y=190,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_spd_num = TextBox(canvas=self.canvas_field, x=570, y=215,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_acc_num = TextBox(canvas=self.canvas_field, x=570, y=240,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
         self.line_seperate_1 = Line(canvas=self.canvas_field, point_1=(400, 270), point_2=(680, 270), width=1, color=Color.lightgray)
 
         # ---------------------------------- Group gripper ----------------------------------
@@ -204,17 +207,34 @@ class App(tk.Tk):
 
         # ---------------------------------- Group movement ----------------------------------
         self.text_movement = TextBox(canvas=self.canvas_field, x=540, y=599.5, text="Movement", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
-        self.press_home = PressButton(canvas=self.canvas_field, x=465, y=625, w=150, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", font_name="Inter-SemiBold", text_size=font_size_button_home, active_default=True)
+        self.press_home = PressButton(canvas=self.canvas_field, x=465, y=635, w=150, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", font_name="Inter-SemiBold", text_size=font_size_button_home, active_default=True)
         self.press_run  = PressButton(canvas=self.canvas_field, x=465, y=675, w=150, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", font_name="Inter-SemiBold", text_size=font_size_button_run, active_default=False)
         self.running = False
         self.homing = False
 
         # ---------------------------------- Error ----------------------------------
-        self.message_error = MessageBox(canvas=self.canvas_field, x=380, y=460, width_field=320, text="Input x for Point Mode must be one number (integer)", color=Color.red, align="Center", font_name="Inter-SemiBold", size=font_size_message_error)
+        self.message_error = MessageBox(canvas=self.canvas_field, x=380, y=460, width_field=320, text="", color=Color.red, align="Center", font_name="Inter-Bold", size=font_size_message_error)
         self.message_error.hide()
 
-        self.canvas_field.bind("<ButtonRelease-1>", self.mouse_position)
-        self.grid.canvas.bind("<Button-1>", lambda event: self.grid.on_click(event, self.operation_mode))
+        # ---------------------------------- Connection ----------------------------------
+        self.message_connection = MessageBox(canvas=self.canvas_field, x=380, y=610, width_field=320, text="\" Connection Disconnected \"", color=Color.red, align="Center", font_name="Inter-Bold", size=font_size_message_error)
+        self.message_connection.hide()
+
+
+        self.dot = None
+        self.dot_point = None
+        self.target_x = 0
+        self.previous_x = 0
+        self.previous_z = 0
+        self.first_out_entry_flag = False
+        self.first_point_entry_flag = False
+        self.grid_flag = False
+
+        
+        self.bind("<Return>", self.out_entry)
+        self.canvas_field.bind("<Button-1>", self.handle_press_home)
+        self.canvas_field.bind("<Button-1>", self.handle_press_run)
+        self.canvas_field.bind("<Button-1>", self.out_entry)
     
     def handle_radio_operation(self):
         """
@@ -222,6 +242,7 @@ class App(tk.Tk):
         """
         # Click Point Mode
         if self.operation_mode == "Jog" and self.radio_point.on:
+            self.grid.delete_point(self.dot_point)
             self.radio_jog.turn_off()
             self.operation_mode = "Point"
             self.text_pick.hide()
@@ -248,8 +269,14 @@ class App(tk.Tk):
             self.text_z_point.show()
             self.text_z_entry.show()
             self.text_z_point_mm.show()
+            self.text_z_entry.set_text("0")
+            self.first_out_entry_flag = False
+            self.first_point_entry_flag = False
+            self.grid_flag = False
+            
         # Click Jog Mode
         elif self.operation_mode == "Point" and self.radio_jog.on:
+            self.grid.delete_point(self.dot_point)
             self.radio_point.turn_off()
             self.operation_mode = "Jog"
             self.text_pick.show()
@@ -282,9 +309,9 @@ class App(tk.Tk):
         This function turns on vacuum with protocol, turn on vacuum toggle, show vacuum on UI's navigator
         """
         if self.mode == "Graphic":
-            self.protocol_y.laser_on = "1"
+            self.protocol_z.vacuum_on = "1"
         elif self.mode == "Protocol":
-            self.protocol_y.write_end_effector_status("Vacuum On")
+            self.protocol_z.write_end_effector_status("Vacuum On")
         self.toggle_vacuum.turn_on()
     
     def turn_off_vacuum(self):
@@ -292,9 +319,9 @@ class App(tk.Tk):
         This function turns off vacuum with protocol, turn off vacuum toggle, hide vacuum on UI's navigator
         """
         if self.mode == "Graphic":
-            self.protocol_y.laser_on = "0"
+            self.protocol_z.vacuum_on = "0"
         elif self.mode == "Protocol":
-            self.protocol_y.write_end_effector_status("Vacuum Off")
+            self.protocol_z.write_end_effector_status("Vacuum Off")
         self.toggle_vacuum.turn_off()
     
     def handle_toggle_vacuum(self):
@@ -310,17 +337,484 @@ class App(tk.Tk):
                 self.turn_off_vacuum()
             self.toggle_vacuum.pressed = False
     
-    def mouse_position(self, event):
+    def out_entry(self, event):
         """
-        This function is called when user click on the grid during point mode,
-        then move the target and change entry text
+        This function is called when user click outside the entry or press enter or click on the grid
         """
-        if self.operation_mode == "Point" and self.connection and (self.protocol_y.usb_connect or self.mode == "Graphic"):
-            if not self.running and not self.homing and not self.jogging and not self.gripping and not self.vacuum:
-                self.point_target_z = self.grid.on_click(event, self.operation_mode)
-                # Set text in entry
-                self.text_z_entry.set_text(self.point_target_z)
+        if self.operation_mode == "Point":
+            print(self.validate_entry)
+            # Move Target according to Entry's value if value is normal 
+            if self.validate_entry() == "Normal":
 
+                if self.text_z_entry.get_value():
+                    self.target_z = self.text_z_entry.get_value()
+                    # print("\nprevious x: ", self.previous_x)
+                    # print("previous z: ",self.previous_z)
+                    # print("target_z: ", self.target_z)
+                    # print("target_x: ", self.target_x)
+
+                    # condition when click out of entry first when in point mode
+                    if not self.first_out_entry_flag:
+                        self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+                        self.dot_point = self.dot
+                        self.point_target_z = self.target_z
+                        self.point_target_x = self.target_x
+                        self.first_out_entry_flag = True
+                        # print(f"Position first is (x={self.point_target_x }, z={self.point_target_z})")
+
+                    # condition when click out or type in entry 
+                    if self.previous_x != self.target_x and self.previous_z != self.target_z:
+                        self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+                        self.previous_x = self.target_x
+                        self.previous_z = self.target_z
+                        self.dot_point = self.dot
+                        if isinstance(self.target_x, int) and isinstance(self.target_z, int):
+                            self.point_target_z = self.target_z
+                            self.point_target_x = self.target_x
+                            self.text_z_entry.set_text(str(self.previous_z))
+                            # print(f"Position 1 is (x={self.point_target_x}, z={self.point_target_z})")
+
+                    # condition incase type in the entry
+                    elif self.previous_x == self.target_x and self.previous_z != self.target_z:
+                        self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+                        self.previous_x = self.target_x
+                        self.previous_z = self.target_z
+                        self.dot_point = self.dot
+                        if isinstance(self.target_x, int) and isinstance(self.target_z, int):
+                            self.point_target_z = self.target_z
+                            self.point_target_x = self.target_x
+                            self.text_z_entry.set_text(str(self.previous_z))
+                            # print(f"Position 3 is (x={self.point_target_x}, z={self.point_target_z})")
+                
+                    # When click on grid
+                    self.target_x, self.target_z, self.dot, self.grid_flag = self.grid.on_click(event, self.operation_mode)
+                    
+                    if self.grid_flag:
+                        self.previous_x = self.target_x
+                        self.previous_z = self.target_z
+                        self.grid_flag = False
+                        self.dot_point = self.dot
+                        if isinstance(self.target_x, int) and isinstance(self.target_z, int):
+                            self.point_target_z = self.target_z
+                            self.point_target_x = self.target_x
+                            self.text_z_entry.set_text(str(self.previous_z))
+                            # print(f"Position grid is (x={self.point_target_x}, z={self.point_target_z})")
+
+                    print(f"Final position is (x={self.point_target_x}, z={self.point_target_z})")
+
+        if self.operation_mode == "Jog":    
+            if not self.running and not self.homing and not self.jogging and not self.gripping and not self.vacuum:
+                self.focus()
+                self.order_pick_1 = self.entry_pick_1.get_value()
+                self.order_pick_2 = self.entry_pick_2.get_value()
+                self.order_pick_3 = self.entry_pick_3.get_value()
+                self.order_pick_4 = self.entry_pick_4.get_value()
+                self.order_pick_5 = self.entry_pick_5.get_value()
+
+                self.order_place_1 = self.entry_place_1.get_value()
+                self.order_place_2 = self.entry_place_2.get_value()
+                self.order_place_3 = self.entry_place_3.get_value()
+                self.order_place_4 = self.entry_place_4.get_value()
+                self.order_place_5 = self.entry_place_5.get_value()
+
+                # Debug
+                order_1 = f"{self.order_pick_1} to {self.order_place_1}"
+                order_2 = f"{self.order_pick_2} to {self.order_place_2}"
+                order_3 = f"{self.order_pick_3} to {self.order_place_3}"
+                order_4 = f"{self.order_pick_4} to {self.order_place_4}"
+                order_5 = f"{self.order_pick_5} to {self.order_place_5}"
+                order = {"order_1": {order_1}, "order_2": {order_2}, "order_3": {order_3}, "order_4": {order_4}, "order_5": {order_5}}
+                print(f"order: {order}")
+
+
+    def validate_entry(self):
+        """
+        This function validates input in entry and show error message
+        """
+        if self.operation_mode == "Point":
+            # Get value from Entry
+            self.z_value = self.text_z_entry.get_value()
+            # Validate Entry's Value
+            validate_x_result = self.text_z_entry.validate(self.z_value)
+            # Interpret Validation Result
+            validate_point_result = "Normal"
+            if validate_x_result  != 0:
+                self.text_z_entry.error() # Entry Error (Red Text)
+                validate_point_result = self.interpret_validate(validate_x_result, self.operation_mode)
+            else:
+                self.text_z_entry.normal()
+
+            # Display Error Message if Entry Error
+            if validate_point_result != "Normal":
+                self.message_error.change_text(validate_point_result)
+                self.message_error.show()
+                self.press_run.deactivate()
+            else:
+                self.message_error.hide()
+                if self.mode == "Graphic" and not self.running and not self.homing and not self.jogging and not self.gripping and self.connection:
+                    self.press_run.activate()
+                elif not self.running and not self.homing and not self.jogging and not self.gripping and self.connection and self.protocol_y.usb_connect and self.protocol_y.routine_normal:
+                    self.press_run.activate()
+            return validate_point_result
+        else:
+            self.message_error.hide()
+            if not self.running and not self.homing and not self.jogging and not self.gripping and self.connection:
+                self.press_run.activate()
+          
+    def interpret_validate(self, validate_result, operation_mode):
+        """
+        This function converts number code from validation result to error text
+        """
+        if self.operation_mode == "Point":
+            if validate_result == 1:
+                return Error.code_point_1
+                    
+    def handle_press_home(self):
+        """
+        This function handles when user press "Home" button
+        """
+        if self.press_home.pressed:
+            print(f"press Home")
+            if self.mode == "Graphic":
+                self.protocol_z.z_axis_moving_status = "Home"
+            elif self.mode == "Protocol":
+                self.protocol_z.write_base_system_status("Home")
+            self.homing = True
+            self.toggle_vacuum.deactivate()
+            
+            self.radio_jog.deactivate()  
+            self.entry_pick_1.disable()
+            self.entry_pick_2.disable()
+            self.entry_pick_3.disable()
+            self.entry_pick_4.disable()
+            self.entry_pick_5.disable()
+
+            self.entry_place_1.disable()
+            self.entry_place_2.disable()
+            self.entry_place_3.disable()
+            self.entry_place_4.disable()
+            self.entry_place_5.disable()  
+
+            self.radio_point.deactivate()
+            self.text_z_entry.disable()      
+            self.press_run.deactivate()
+            self.press_home.deactivate()
+            self.press_home.pressed = False
+    
+    def handle_press_run(self):
+        """
+        This function handles when user press "Run" button
+        """
+        if self.press_run.pressed:
+            # if self.operation_mode == "Jog":
+            #     if self.mode == "Graphic":
+            #         self.protocol_z.z_axis_moving_status = "pick"
+            #     elif self.mode == "Protocol":
+            #         self.protocol_z.write_base_system_status("Run Tray Mode")
+            # elif self.operation_mode == "Point":
+            #     if self.mode == "Graphic":
+            #         self.protocol_z.z_axis_moving_status = "Go Point"
+            #     elif self.mode == "Protocol":
+            #         self.protocol_z.write_goal_point(self.point_target_x, self.point_target_y)
+            #         self.protocol_z.write_base_system_status("Run Point Mode")
+            #     self.message_navi.change_text("Going to Point")
+            self.running = True
+            self.toggle_vacuum.deactivate()
+            
+            self.radio_jog.deactivate()  
+            self.entry_pick_1.disable()
+            self.entry_pick_2.disable()
+            self.entry_pick_3.disable()
+            self.entry_pick_4.disable()
+            self.entry_pick_5.disable()
+
+            self.entry_place_1.disable()
+            self.entry_place_2.disable()
+            self.entry_place_3.disable()
+            self.entry_place_4.disable()
+            self.entry_place_5.disable()  
+
+            self.radio_point.deactivate()
+            self.text_z_entry.disable()  
+            self.press_run.deactivate()
+            self.press_home.deactivate()
+            self.press_run.pressed = False
+
+    def handle_finish_moving(self):
+        """
+        This function handles when finish moving to reactivate elements
+        """
+        self.toggle_vacuum.activate()
+            
+        self.radio_jog.activate()  
+        self.entry_pick_1.enable()
+        self.entry_pick_2.enable()
+        self.entry_pick_3.enable()
+        self.entry_pick_4.enable()
+        self.entry_pick_5.enable()
+
+        self.entry_place_1.enable()
+        self.entry_place_2.enable()
+        self.entry_place_3.enable()
+        self.entry_place_4.enable()
+        self.entry_place_5.enable()  
+
+        self.radio_point.activate()
+        self.text_z_entry.enable()  
+        self.press_run.activate()
+        self.press_home.activate()
+        self.press_run.activate()
+        self.press_home.activate()
+
+    def handle_connection_change(self):
+        """
+        This function handles when connection change
+        """
+        if self.connection != self.new_connection:
+            # Update Connection Value
+            self.connection = self.new_connection
+            if not self.connection: # If Disconnected
+                self.handle_disconnected()
+            else: # If Reconnected
+                self.handle_connected()
+
+    def handle_disconnected(self):
+        """
+        This function handles when connection miss a heartbeat
+        """
+        self.toggle_vacuum.deactivate()
+
+        self.text_x_pos_num.deactivate(self.text_x_pos_num.text, Color.lightgray)
+        self.text_z_pos_num.deactivate(self.text_z_pos_num.text, Color.lightgray)
+        self.text_z_spd_num.deactivate(self.text_z_spd_num.text, Color.lightgray)
+        self.text_z_acc_num.deactivate(self.text_z_acc_num.text, Color.lightgray)
+        
+        self.radio_jog.deactivate()  
+        self.entry_pick_1.disable()
+        self.entry_pick_2.disable()
+        self.entry_pick_3.disable()
+        self.entry_pick_4.disable()
+        self.entry_pick_5.disable()
+
+        self.entry_place_1.disable()
+        self.entry_place_2.disable()
+        self.entry_place_3.disable()
+        self.entry_place_4.disable()
+        self.entry_place_5.disable()  
+
+        self.radio_point.deactivate()
+        self.text_z_entry.disable()  
+        self.press_run.deactivate()
+        self.press_home.deactivate()
+        
+    def handle_connected(self):
+        """
+        This function handles when connection obtain a heartbeat again
+        """
+        self.message_connection.hide()
+        self.text_x_pos_num.activate(self.text_x_pos_num.text, Color.blue)
+        self.text_z_pos_num.activate(self.text_z_pos_num.text, Color.blue)
+        self.text_z_spd_num.activate(self.text_z_spd_num.text, Color.blue)
+        self.text_z_acc_num.activate(self.text_z_acc_num.text, Color.blue)
+        if not self.running and not self.homing and not self.jogging:
+            self.radio_jog.activate()  
+            self.entry_pick_1.enable()
+            self.entry_pick_2.enable()
+            self.entry_pick_3.enable()
+            self.entry_pick_4.enable()
+            self.entry_pick_5.enable()
+
+            self.entry_place_1.enable()
+            self.entry_place_2.enable()
+            self.entry_place_3.enable()
+            self.entry_place_4.enable()
+            self.entry_place_5.enable()  
+
+            self.radio_point.activate()
+            self.text_z_entry.enable()  
+            self.press_run.activate()
+            self.press_home.activate()
+            self.press_run.activate()
+            self.press_home.activate()
+
+    def handle_ui_change(self):
+        """
+        This function handles updating UI (according to protocol status) 
+        """
+        # vacuum
+        if self.protocol_z.vacuum_on == "1":
+            self.toggle_vacuum.turn_on()
+        else:
+            self.toggle_vacuum.turn_off()
+
+        # # Gripper
+        # if self.protocol_z.gripper_movement == "1":
+        #     self.status_forward.turn_on()
+        #     self.status_backward.turn_off()
+        # elif self.protocol_z.gripper_movement == "0":
+        #     self.status_forward.turn_off()
+        #     self.status_backward.turn_on()
+    
+
+        # Actual motion value
+        self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
+        self.text_z_pos_num.change_text(self.protocol_z.z_axis_actual_pos)
+        self.text_z_spd_num.change_text(self.protocol_z.z_axis_actual_spd)
+        self.text_z_acc_num.change_text(self.protocol_z.z_axis_actual_acc)
+
+    #     # Moving Status
+    #     if self.protocol_y.y_axis_moving_status == "Idle" and self.protocol_x.x_axis_moving_status == "Idle":
+    #         # Hide navi message
+    #         self.message_navi.hide()
+    #         # When finish moving
+    #         if self.protocol_y.y_axis_moving_status_before != "Idle" or self.protocol_x.x_axis_moving_status_before != "Idle":
+    #             self.handle_finish_moving()
+    #             if self.protocol_y.y_axis_moving_status_before == "Jog Pick":
+    #                 if self.mode == "Protocol":
+    #                     self.protocol_y.read_pick_tray_position()
+    #                 self.tray_pick.origin_x = self.protocol_y.pick_tray_origin_x / 10
+    #                 self.tray_pick.origin_y = self.protocol_y.pick_tray_origin_y / 10
+    #                 self.tray_pick.orientation = self.protocol_y.pick_tray_orientation
+    #                 self.tray_pick.create_tray()
+    #                 self.jogging = False
+    #                 self.show_tray_pick = True
+    #             elif self.protocol_y.y_axis_moving_status_before == "Jog Place":
+    #                 if self.mode == "Protocol":
+    #                     self.protocol_y.read_place_tray_position()
+    #                 self.tray_place.origin_x = self.protocol_y.place_tray_origin_x / 10
+    #                 self.tray_place.origin_y = self.protocol_y.place_tray_origin_y / 10
+    #                 self.tray_place.orientation = self.protocol_y.place_tray_orientation
+    #                 self.tray_place.create_tray()
+    #                 self.jogging = False
+    #                 self.show_tray_place = True
+    #             elif self.protocol_y.y_axis_moving_status_before == "Home" or self.protocol_x.x_axis_moving_status_before == "Home":
+    #                 self.homing = False
+    #             elif self.protocol_y.y_axis_moving_status_before == "Go Place" or self.protocol_x.x_axis_moving_status_before == "Run":
+    #                 self.running = False
+    #             elif self.protocol_y.y_axis_moving_status_before == "Go Point" or self.protocol_x.x_axis_moving_status_before == "Run":
+    #                 self.running = False
+    #             self.protocol_y.y_axis_moving_status_before = "Idle"
+    #     else:
+    #         # Show navi message
+    #         if self.protocol_y.y_axis_moving_status == "Jog Pick":
+    #             self.message_navi.change_text("Jogging")
+    #         elif self.protocol_y.y_axis_moving_status == "Jog Place":
+    #             self.message_navi.change_text("Jogging")
+    #         elif self.protocol_y.y_axis_moving_status == "Home":
+    #             self.message_navi.change_text("Homing")
+    #         elif self.protocol_y.y_axis_moving_status == "Go Pick":
+    #             self.message_navi.change_text("Going to Pick")
+    #         elif self.protocol_y.y_axis_moving_status == "Go Place":
+    #             self.message_navi.change_text("Going to Place")
+    #         elif self.protocol_y.y_axis_moving_status == "Go Point":
+    #             self.message_navi.change_text("Going to Point")
+    #         self.message_navi.show()
+
+    # def handle_protocol_y(self):
+    #     """
+    #     This function handles protocol y
+    #     """
+    #     # Check USB connection
+    #     if self.protocol_y.usb_connect:
+    #         # When reconnect USB
+    #         if self.protocol_y.usb_connect_before == False:
+    #             print("When reconnect USB")
+    #             self.handle_connected()
+    #             self.protocol_y.usb_connect_before = True
+    #         # Check if there is protocol error from user (y-axis)
+    #         if self.protocol_y.routine_normal == False:
+    #             self.message_connection.change_text("Protocol Error from Y-Axis")
+    #             self.handle_disconnected()
+    #         else:
+    #             # Do protocol as normal every 200 ms
+    #             if self.time_ms_y >= 200:
+    #                 self.time_ms_y = 0
+    #                 self.new_connection = self.protocol_y.heartbeat()
+    #                 if self.new_connection: # If Connected
+    #                     self.protocol_y.routine() # Do routine
+    #                 self.end_time = time.time()
+    #                 self.print_current_activity()
+    #                 print((self.end_time-self.start_time)*1000, "ms\n")
+    #                 self.start_time = time.time()
+    #             # If Connection is Changed 
+    #             self.handle_connection_change()
+    #             # Update UI accoring to protocol status
+    #             self.handle_ui_change()
+    #     else:
+    #         self.message_connection.change_text("Please Connect the USB")
+    #         self.handle_disconnected()
+    #         self.protocol_y.write_heartbeat()
+    #         self.protocol_y.usb_connect_before = False
+
+    # def handle_protocol_x(self):
+    #     """
+    #     This function handles protocol x
+    #     """
+    #     if self.protocol_x.connection:
+    #         if self.time_ms_x >= 100:
+    #             self.time_ms_x = 0
+
+    #             # When start homing
+    #             if self.protocol_y.x_axis_moving_status == "Home":
+    #                 if self.protocol_x.x_axis_moving_status_before == "Idle":
+    #                     self.protocol_x.write_x_axis_moving_status("Home")
+    #             # When start running
+    #             elif self.protocol_y.x_axis_moving_status == "Run":
+    #                 if self.protocol_x.x_axis_moving_status_before == "Idle":
+    #                     self.protocol_y.read_x_axis_target_motion()
+    #                     self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
+    #                     self.protocol_x.write_x_axis_moving_status("Run")
+    #             # When jogging
+    #             elif self.protocol_y.x_axis_moving_status == "Jog Left":
+    #                 if self.protocol_y.x_axis_moving_status_before != "Jog Left":
+    #                     self.protocol_x.write_x_axis_moving_status("Jog Left")
+    #             elif self.protocol_y.x_axis_moving_status == "Jog Right":
+    #                 if self.protocol_y.x_axis_moving_status_before != "Jog Right":
+    #                     self.protocol_x.write_x_axis_moving_status("Jog Right")
+                
+    #             # When stop jogging
+    #             if self.protocol_y.x_axis_moving_status == "Idle":
+    #                 if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
+    #                     self.protocol_x.write_x_axis_moving_status("Idle")
+
+    #             # Read moving status and actual motion all the time
+    #             self.protocol_x.read_holding_registers()
+    #             self.protocol_x.read_x_axis_moving_status()
+    #             self.protocol_x.read_x_axis_actual_motion()
+    #             self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
+
+    #             if self.protocol_x.x_axis_moving_status == "Idle":
+    #                 # When stop homing
+    #                 if self.protocol_x.x_axis_moving_status_before == "Home":
+    #                     self.protocol_y.write_x_axis_moving_status("Idle")
+    #                 # When stop running
+    #                 if self.protocol_x.x_axis_moving_status_before == "Run":
+    #                     self.protocol_y.write_x_axis_moving_status("Idle")
+
+    # def handle_graphic(self):
+    #     """
+    #     This function handles Graphic mode only
+    #     """
+    #     self.handle_connection_change()
+    #     self.handle_ui_change()
+
+    #     self.protocol_z.z_axis_moving_status_before = self.protocol_z.z_axis_moving_status
+        
+    #     if self.protocol_z.z_axis_moving_status == "Home":
+    #         self.keyboard.auto_pilot(0, 0)
+    #     elif self.protocol_z.z_axis_moving_status == "Go Pick":
+    #         self.protocol_z.z_axis_moving_status = "Go Place"
+    #     elif self.protocol_z.z_axis_moving_status == "Go Point":
+    #         self.keyboard.auto_pilot(self.point_target_x, self.point_target_y)
+
+    # def print_current_activity(self):
+    #     """
+    #     This function prints current activity for debugging in terminal
+    #     """
+    #     if self.running:   print("Running")
+    #     if self.homing:    print("Homing")
+    #     if self.jogging:   print("Jogging")
+    #     if self.vacuum:    print("Vacuum")
 
 if __name__ == "__main__":
     app = App()
