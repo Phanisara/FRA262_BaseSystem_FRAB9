@@ -135,7 +135,7 @@ class ToggleButton(Button):
         self.pressed = False
         self.round_rec = RoundRectangle(self.canvas, x, y, w, h, h/2, self.on_active_color)
         self.oval      = Oval(self.canvas, x+w-h+3, y+3, h-6, fill_color=Color.white, outline_color="")
-        self.textbox = TextBox(self.canvas, x+60, y+h/2, self.on_text, self.font_name, self.text_size, self.on_active_color)
+        self.textbox = TextBox(self.canvas, x+50, y+h/2, self.on_text, self.font_name, self.text_size, self.on_active_color, anchor="w")
         self.click_area = self.create_click_area(w, h)
         self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.clicked)
         if not self.on:
