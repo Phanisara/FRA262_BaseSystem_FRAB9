@@ -52,6 +52,7 @@ class App(tk.Tk):
     def task(self):
         # Handle Buttons
         self.handle_toggle_vacuum()
+        self.handle_toggle_movement()
         self.handle_radio_operation()
         self.handle_press_home()
         self.handle_press_run()
@@ -154,17 +155,14 @@ class App(tk.Tk):
         # ---------------------------------- Group gripper ----------------------------------
         self.vacuum = False
         self.text_gripper = TextBox(canvas=self.canvas_field, x=540, y=300, text="Gripper", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
-        self.text_vacuum = TextBox(canvas=self.canvas_field, x=430, y=330, text="Vacuum", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
-        self.toggle_vacuum   = ToggleButton(canvas=self.canvas_field, x=395, y=350, w=40, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="ON", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="OFF", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
+        self.text_vacuum = TextBox(canvas=self.canvas_field, x=450, y=330, text="Vacuum", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.toggle_vacuum   = ToggleButton(canvas=self.canvas_field, x=415, y=350, w=40, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="ON", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="OFF", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
         
-        self.line_gripper = Line(canvas=self.canvas_field, point_1=(480, 325), point_2=(480, 380), width=1, color=Color.lightgray)
+        self.line_gripper = Line(canvas=self.canvas_field, point_1=(520, 325), point_2=(520, 380), width=1, color=Color.lightgray)
 
         self.gripping = False
-        self.text_movement = TextBox(canvas=self.canvas_field, x=590, y=330, text="Movement", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
-        self.status_forward = StatusButton(canvas=self.canvas_field, x=500, y=350, w=20, h=20, on_active_color=Color.blue, off_active_color=Color.gray, on_default=False)
-        self.status_backward = StatusButton(canvas=self.canvas_field, x=590, y=350, w=20, h=20, on_active_color=Color.blue, off_active_color=Color.gray, on_default=False)
-        self.text_forward = TextBox(canvas=self.canvas_field, x=530, y=357.5, text="Forward", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_backward = TextBox(canvas=self.canvas_field, x=620, y=357.5, text="Backword", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_movement = TextBox(canvas=self.canvas_field, x=610, y=330, text="Movement", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.toggle_movement   = ToggleButton(canvas=self.canvas_field, x=545, y=350, w=40, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="FORWARD", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="BACKWARD", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
         self.line_seperate_2 = Line(canvas=self.canvas_field, point_1=(400, 387.5), point_2=(680, 387.5), width=1, color=Color.lightgray)
 
         # ---------------------------------- Group operation ----------------------------------
@@ -336,6 +334,39 @@ class App(tk.Tk):
             else:
                 self.turn_off_vacuum()
             self.toggle_vacuum.pressed = False
+
+    def turn_on_movement(self):
+        """
+        This function turns on movement with protocol, turn on movement toggle, show movement on UI's navigator
+        """
+        if self.mode == "Graphic":
+            self.protocol_z.movement_on = "1"
+        elif self.mode == "Protocol":
+            self.protocol_z.write_end_effector_status("Movement Forward")
+        self.toggle_movement.turn_on()
+    
+    def turn_off_movement(self):
+        """
+        This function turns off movement with protocol, turn off movement toggle, hide movement on UI's navigator
+        """
+        if self.mode == "Graphic":
+            self.protocol_z.movement_on = "0"
+        elif self.mode == "Protocol":
+            self.protocol_z.write_end_effector_status("Movement Backward")
+        self.toggle_movement.turn_off()
+    
+    def handle_toggle_movement(self):
+        """
+        This function handles when user press movement toggle
+        """
+        if self.toggle_movement.pressed:
+            # Turn movement On
+            if not self.toggle_movement.on:
+                self.turn_on_movement()
+            # Turn movement Off
+            else:
+                self.turn_off_movement()
+            self.toggle_movement.pressed = False
     
     def out_entry(self, event):
         """
@@ -348,7 +379,8 @@ class App(tk.Tk):
 
                 if self.text_z_entry.get_value():
                     self.target_z = self.text_z_entry.get_value()
-                    # print("\nprevious x: ", self.previous_x)
+                    # print("\n-------- DEBUG --------")
+                    # print("previous x: ", self.previous_x)
                     # print("previous z: ",self.previous_z)
                     # print("target_z: ", self.target_z)
                     # print("target_x: ", self.target_x)
@@ -481,6 +513,7 @@ class App(tk.Tk):
                 self.protocol_z.write_base_system_status("Home")
             self.homing = True
             self.toggle_vacuum.deactivate()
+            self.toggle_movement.deactivate()
             
             self.radio_jog.deactivate()  
             self.entry_pick_1.disable()
@@ -520,6 +553,7 @@ class App(tk.Tk):
             #     self.message_navi.change_text("Going to Point")
             self.running = True
             self.toggle_vacuum.deactivate()
+            self.toggle_movement.deactivate()
             
             self.radio_jog.deactivate()  
             self.entry_pick_1.disable()
@@ -545,6 +579,7 @@ class App(tk.Tk):
         This function handles when finish moving to reactivate elements
         """
         self.toggle_vacuum.activate()
+        self.toggle_movement.activate()
             
         self.radio_jog.activate()  
         self.entry_pick_1.enable()
@@ -583,6 +618,7 @@ class App(tk.Tk):
         This function handles when connection miss a heartbeat
         """
         self.toggle_vacuum.deactivate()
+        self.toggle_movement.deactivate()
 
         self.text_x_pos_num.deactivate(self.text_x_pos_num.text, Color.lightgray)
         self.text_z_pos_num.deactivate(self.text_z_pos_num.text, Color.lightgray)
@@ -647,13 +683,11 @@ class App(tk.Tk):
         else:
             self.toggle_vacuum.turn_off()
 
-        # # Gripper
-        # if self.protocol_z.gripper_movement == "1":
-        #     self.status_forward.turn_on()
-        #     self.status_backward.turn_off()
-        # elif self.protocol_z.gripper_movement == "0":
-        #     self.status_forward.turn_off()
-        #     self.status_backward.turn_on()
+        # Gripper
+        if self.protocol_z.gripper_movement == "1":
+            self.toggle_movement.turn_on()
+        elif self.protocol_z.gripper_movement == "0":
+            self.toggle_movement.turn_off()
     
 
         # Actual motion value
