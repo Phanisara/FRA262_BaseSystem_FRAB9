@@ -2,7 +2,7 @@ import platform
 import struct
 from pymodbus.client import ModbusSerialClient as ModbusClient
 from pymodbus.client import ModbusTcpClient
-print("test")
+
 class Binary():
     """
     Binary Class
