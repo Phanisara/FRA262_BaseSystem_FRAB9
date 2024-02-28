@@ -60,7 +60,7 @@ class Protocol_Z(Binary):
         if self.os == 'M': #Mac
             self.port = "/dev/cu.usbmodem14103"
         elif self.os == 'W': #Windows        
-            self.port = "COM7"
+            self.port = "COM3"
 
         self.usb_connect = False
         self.usb_connect_before = False
@@ -70,10 +70,9 @@ class Protocol_Z(Binary):
         
         self.routine_normal = True
 
-        self.vacuum_on = "0"
-        self.gripper_power = "0"
-        self.gripper_pick = "0"
-        self.gripper_place = "0"
+        self.vacuum = "0"
+        self.gripper = "0"
+
         self.z_axis_moving_status_before = "Idle"
         self.z_axis_moving_status = "Idle"
         self.z_axis_actual_pos = 0.0

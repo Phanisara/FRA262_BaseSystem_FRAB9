@@ -12,7 +12,7 @@ from components.shape import RoundRectangle, Line
 from components.text import TextBox, MessageBox, Error
 from components.photo import Photo
 from components.entry import Entry, OrderEntry
-from protocol import Protocol_Z, Protocol_X
+from protocol import Protocol_Z
 
 class App(tk.Tk):
     def __init__(self):
@@ -41,7 +41,7 @@ class App(tk.Tk):
         self.time_ms_x = 0
         # Prepare Protocol
         self.protocol_z = Protocol_Z()
-        self.protocol_x = Protocol_X()
+        # self.protocol_x = Protocol_X()
         self.connection = True
         self.new_connection = True
         # # Keyboard Control for Developer
@@ -62,11 +62,11 @@ class App(tk.Tk):
         #     self.handle_graphic()
 
         if self.mode == "Protocol":
-            # Handle y-axis protocol
+            # Handle z-axis protocol
             self.start_time = time.time()
             self.handle_protocol_z()
             # Handle x-axis protocol
-            self.handle_protocol_x()
+            # self.handle_protocol_x()
 
         # Validate Entry Value
         self.validate_entry()
@@ -133,7 +133,7 @@ class App(tk.Tk):
         # ------------------------------------- logo ---------------------------------------
         self.text_title = TextBox(canvas=self.canvas_field, x=573, y=55, text="ROBOTICS STUDIO III", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
         self.text_subtitle = TextBox(canvas=self.canvas_field, x=572, y=85, text="BASE SYSTEM", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
-        self.photo_logo = Photo(canvas=self.canvas_field, file_name="../img/logo.png", x=433, y=70, size_x=52, size_y=52)
+        self.photo_logo = Photo(canvas=self.canvas_field, file_name="img\logo.png", x=433, y=70, size_x=52, size_y=52)
 
         # ---------------------------------- Group detail ----------------------------------
         self.text_detail = TextBox(canvas=self.canvas_field, x=540, y=140, text="Detail", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
@@ -307,9 +307,9 @@ class App(tk.Tk):
         This function turns on vacuum with protocol, turn on vacuum toggle, show vacuum on UI's navigator
         """
         if self.mode == "Graphic":
-            self.protocol_z.vacuum_on = "1"
+            self.protocol_z.vacuum = "1"
         elif self.mode == "Protocol":
-            self.protocol_z.write_end_effector_status("Vacuum On")
+            self.protocol_z.write_vaccuum_status("Vacuum On")
         self.toggle_vacuum.turn_on()
     
     def turn_off_vacuum(self):
@@ -317,9 +317,9 @@ class App(tk.Tk):
         This function turns off vacuum with protocol, turn off vacuum toggle, hide vacuum on UI's navigator
         """
         if self.mode == "Graphic":
-            self.protocol_z.vacuum_on = "0"
+            self.protocol_z.vacuum = "0"
         elif self.mode == "Protocol":
-            self.protocol_z.write_end_effector_status("Vacuum Off")
+            self.protocol_z.write_vaccuum_status("Vacuum Off")
         self.toggle_vacuum.turn_off()
     
     def handle_toggle_vacuum(self):
@@ -340,9 +340,9 @@ class App(tk.Tk):
         This function turns on movement with protocol, turn on movement toggle, show movement on UI's navigator
         """
         if self.mode == "Graphic":
-            self.protocol_z.movement_on = "1"
+            self.protocol_z.gripper = "1"
         elif self.mode == "Protocol":
-            self.protocol_z.write_end_effector_status("Movement Forward")
+            self.protocol_z.write_gripper_status("Movement Forward")
         self.toggle_movement.turn_on()
     
     def turn_off_movement(self):
@@ -350,9 +350,9 @@ class App(tk.Tk):
         This function turns off movement with protocol, turn off movement toggle, hide movement on UI's navigator
         """
         if self.mode == "Graphic":
-            self.protocol_z.movement_on = "0"
+            self.protocol_z.gripper = "0"
         elif self.mode == "Protocol":
-            self.protocol_z.write_end_effector_status("Movement Backward")
+            self.protocol_z.write_gripper_status("Movement Backward")
         self.toggle_movement.turn_off()
     
     def handle_toggle_movement(self):
@@ -678,20 +678,20 @@ class App(tk.Tk):
         This function handles updating UI (according to protocol status) 
         """
         # vacuum
-        if self.protocol_z.vacuum_on == "1":
+        if self.protocol_z.vacuum == "1":
             self.toggle_vacuum.turn_on()
         else:
             self.toggle_vacuum.turn_off()
 
         # Gripper
-        if self.protocol_z.gripper_movement == "1":
+        if self.protocol_z.gripper == "1":
             self.toggle_movement.turn_on()
-        elif self.protocol_z.gripper_movement == "0":
+        elif self.protocol_z.gripper == "0":
             self.toggle_movement.turn_off()
     
 
         # Actual motion value
-        self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
+        self.text_x_pos_num.change_text(self.protocol_z.z_axis_actual_pos)
         self.text_z_pos_num.change_text(self.protocol_z.z_axis_actual_pos)
         self.text_z_spd_num.change_text(self.protocol_z.z_axis_actual_spd)
         self.text_z_acc_num.change_text(self.protocol_z.z_axis_actual_acc)
@@ -744,41 +744,41 @@ class App(tk.Tk):
     #             self.message_navi.change_text("Going to Point")
     #         self.message_navi.show()
 
-    # def handle_protocol_y(self):
-    #     """
-    #     This function handles protocol y
-    #     """
-    #     # Check USB connection
-    #     if self.protocol_y.usb_connect:
-    #         # When reconnect USB
-    #         if self.protocol_y.usb_connect_before == False:
-    #             print("When reconnect USB")
-    #             self.handle_connected()
-    #             self.protocol_y.usb_connect_before = True
-    #         # Check if there is protocol error from user (y-axis)
-    #         if self.protocol_y.routine_normal == False:
-    #             self.message_connection.change_text("Protocol Error from Y-Axis")
-    #             self.handle_disconnected()
-    #         else:
-    #             # Do protocol as normal every 200 ms
-    #             if self.time_ms_y >= 200:
-    #                 self.time_ms_y = 0
-    #                 self.new_connection = self.protocol_y.heartbeat()
-    #                 if self.new_connection: # If Connected
-    #                     self.protocol_y.routine() # Do routine
-    #                 self.end_time = time.time()
-    #                 self.print_current_activity()
-    #                 print((self.end_time-self.start_time)*1000, "ms\n")
-    #                 self.start_time = time.time()
-    #             # If Connection is Changed 
-    #             self.handle_connection_change()
-    #             # Update UI accoring to protocol status
-    #             self.handle_ui_change()
-    #     else:
-    #         self.message_connection.change_text("Please Connect the USB")
-    #         self.handle_disconnected()
-    #         self.protocol_y.write_heartbeat()
-    #         self.protocol_y.usb_connect_before = False
+    def handle_protocol_z(self):
+        """
+        This function handles protocol y
+        """
+        # Check USB connection
+        if self.protocol_z.usb_connect:
+            # When reconnect USB
+            if self.protocol_z.usb_connect_before == False:
+                print("When reconnect USB")
+                self.handle_connected()
+                self.protocol_z.usb_connect_before = True
+            # Check if there is protocol error from user (y-axis)
+            if self.protocol_z.routine_normal == False:
+                self.message_connection.change_text("Protocol Error from Y-Axis")
+                self.handle_disconnected()
+            else:
+                # Do protocol as normal every 200 ms
+                if self.time_ms_y >= 200:
+                    self.time_ms_y = 0
+                    self.new_connection = self.protocol_z.heartbeat()
+                    if self.new_connection: # If Connected
+                        self.protocol_z.routine() # Do routine
+                    self.end_time = time.time()
+                    self.print_current_activity()
+                    print((self.end_time-self.start_time)*1000, "ms\n")
+                    self.start_time = time.time()
+                # If Connection is Changed 
+                self.handle_connection_change()
+                # Update UI accoring to protocol status
+                self.handle_ui_change()
+        else:
+            self.message_connection.change_text("Please Connect the USB")
+            self.handle_disconnected()
+            self.protocol_z.write_heartbeat()
+            self.protocol_z.usb_connect_before = False
 
     # def handle_protocol_x(self):
     #     """
@@ -841,14 +841,14 @@ class App(tk.Tk):
     #     elif self.protocol_z.z_axis_moving_status == "Go Point":
     #         self.keyboard.auto_pilot(self.point_target_x, self.point_target_y)
 
-    # def print_current_activity(self):
-    #     """
-    #     This function prints current activity for debugging in terminal
-    #     """
-    #     if self.running:   print("Running")
-    #     if self.homing:    print("Homing")
-    #     if self.jogging:   print("Jogging")
-    #     if self.vacuum:    print("Vacuum")
+    def print_current_activity(self):
+        """
+        This function prints current activity for debugging in terminal
+        """
+        if self.running:   print("Running")
+        if self.homing:    print("Homing")
+        if self.jogging:   print("Jogging")
+        if self.vacuum:    print("Vacuum")
 
 if __name__ == "__main__":
     app = App()
