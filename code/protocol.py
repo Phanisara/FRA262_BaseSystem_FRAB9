@@ -110,8 +110,8 @@ class Protocol_Z(Binary):
             self.read_z_axis_moving_status()
             self.read_x_axis_moving_status()
             self.read_z_axis_actual_motion()
-            print("Vacuum:", self.vacuum_on)
-            print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
+            print("Vacuum:", self.vacuum)
+            print("Gripper:", self.gripper)
             print("Pos:", self.z_axis_actual_pos, "\tSpd:", self.z_axis_actual_spd, "\tAcc:", self.z_axis_actual_acc)
             print("Z-Axis Moving:", self.z_axis_moving_status)
             print("X-Axis Moving:", self.x_axis_moving_status)
@@ -150,26 +150,25 @@ class Protocol_Z(Binary):
         print("Write Base System Status to Client")
 
     def read_end_effector_status(self):
-        end_effector_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x02]))[::-1]
-        self.vacuum_on      = end_effector_status_binary[0]
-        self.gripper_power = end_effector_status_binary[1]
-        self.gripper_pick  = end_effector_status_binary[2]
-        self.gripper_place = end_effector_status_binary[3]
+        vacuum_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x02]))[::-1]
+        gripper_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x03]))[::-1]
+        self.vacuum = vacuum_status_binary[0]
+        self.gripper = gripper_status_binary[0]
 
-    def write_end_effector_status(self, command):
-        if command == "Laser On":
+    def write_vaccuum_status(self, command):
+        if command == "Vacuum On":
             self.end_effector_status_register = 0b0001
-        elif command == "Laser Off":
+        elif command == "Vacuum Off":
             self.end_effector_status_register = 0b0000
-        elif command == "Gripper Power On":
-            self.end_effector_status_register = 0b0010
-        elif command == "Gripper Power Off":
-            self.end_effector_status_register = 0b0000
-        elif command == "Gripper Pick":
-            self.end_effector_status_register = 0b0110
-        elif command == "Gripper Place":
-            self.end_effector_status_register = 0b1010
         self.client.write_register(address=0x02, value=self.end_effector_status_register, slave=self.slave_address)
+
+# write_end_effector_status
+    def write_gripper_status(self, command):
+        if command == "Movement Forward":
+            self.end_effector_status_register = 0b0001
+        elif command == "Movement Backward":
+            self.end_effector_status_register = 0b0000
+        self.client.write_register(address=0x03, value=self.end_effector_status_register, slave=self.slave_address)
 
     def read_z_axis_moving_status(self):
         self.z_axis_moving_status_before = self.z_axis_moving_status
