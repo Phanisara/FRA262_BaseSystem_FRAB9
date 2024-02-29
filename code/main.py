@@ -485,7 +485,7 @@ class App(tk.Tk):
                 self.message_error.hide()
                 if self.mode == "Graphic" and not self.running and not self.homing and not self.jogging and not self.gripping and self.connection:
                     self.press_run.activate()
-                elif not self.running and not self.homing and not self.jogging and not self.gripping and self.connection and self.protocol_y.usb_connect and self.protocol_y.routine_normal:
+                elif not self.running and not self.homing and not self.jogging and not self.gripping and self.connection and self.protocol_z.usb_connect and self.protocol_z.routine_normal:
                     self.press_run.activate()
             return validate_point_result
         else:
@@ -539,18 +539,18 @@ class App(tk.Tk):
         This function handles when user press "Run" button
         """
         if self.press_run.pressed:
-            # if self.operation_mode == "Jog":
-            #     if self.mode == "Graphic":
-            #         self.protocol_z.z_axis_moving_status = "pick"
-            #     elif self.mode == "Protocol":
-            #         self.protocol_z.write_base_system_status("Run Tray Mode")
-            # elif self.operation_mode == "Point":
-            #     if self.mode == "Graphic":
-            #         self.protocol_z.z_axis_moving_status = "Go Point"
-            #     elif self.mode == "Protocol":
-            #         self.protocol_z.write_goal_point(self.point_target_x, self.point_target_y)
-            #         self.protocol_z.write_base_system_status("Run Point Mode")
-            #     self.message_navi.change_text("Going to Point")
+            if self.operation_mode == "Jog":
+                if self.mode == "Graphic":
+                    self.protocol_z.z_axis_moving_status = "pick"
+                elif self.mode == "Protocol":
+                    self.protocol_z.write_base_system_status("Run Tray Mode")
+            elif self.operation_mode == "Point":
+                if self.mode == "Graphic":
+                    self.protocol_z.z_axis_moving_status = "Go Point"
+                elif self.mode == "Protocol":
+                    self.protocol_z.write_goal_point(self.point_target_z)
+                    self.protocol_z.write_base_system_status("Run Point Mode")
+                # self.message_navi.change_text("Going to Point")
             self.running = True
             self.toggle_vacuum.deactivate()
             self.toggle_movement.deactivate()
@@ -678,16 +678,16 @@ class App(tk.Tk):
         This function handles updating UI (according to protocol status) 
         """
         # vacuum
-        if self.protocol_z.vacuum == "1":
-            self.toggle_vacuum.turn_on()
-        else:
-            self.toggle_vacuum.turn_off()
+        # if self.protocol_z.vacuum == "1":
+        #     self.toggle_vacuum.turn_on()
+        # else:
+        #     self.toggle_vacuum.turn_off()
 
         # Gripper
-        if self.protocol_z.gripper == "1":
-            self.toggle_movement.turn_on()
-        elif self.protocol_z.gripper == "0":
-            self.toggle_movement.turn_off()
+        # if self.protocol_z.gripper == "1":
+        #     self.toggle_movement.turn_on()
+        # elif self.protocol_z.gripper == "0":
+        #     self.toggle_movement.turn_off()
     
 
         # Actual motion value

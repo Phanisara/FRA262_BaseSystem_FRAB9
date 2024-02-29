@@ -112,8 +112,8 @@ class Protocol_Z(Binary):
             print("Vacuum:", self.vacuum)
             print("Gripper:", self.gripper)
             print("Pos:", self.z_axis_actual_pos, "\tSpd:", self.z_axis_actual_spd, "\tAcc:", self.z_axis_actual_acc)
-            print("Z-Axis Moving:", self.z_axis_moving_status)
-            print("X-Axis Moving:", self.x_axis_moving_status)
+            print("Z-Axis Moving Status:", self.z_axis_moving_status)
+            # print("X-Axis Moving:", self.x_axis_moving_status)
             self.routine_normal = True
         except Exception as e:
             print("Routine Error", e)
@@ -192,11 +192,11 @@ class Protocol_Z(Binary):
         self.z_axis_actual_spd = self.register[0x12] / 10
         self.z_axis_actual_acc = self.register[0x13] / 10
 
-    def write_goal_point(self, x, z):
-        self.goal_point_x_register = self.binary_twos_complement(int(x*10))
+    def write_goal_point(self, z):
+        # self.goal_point_x_register = self.binary_twos_complement(int(x*10))
         self.goal_point_z_register = self.binary_twos_complement(int(z*10))
-        self.client.write_register(address=0x30, value=self.goal_point_x_register, slave=self.slave_address)
-        self.client.write_register(address=0x31, value=self.goal_point_z_register, slave=self.slave_address)
+        # self.client.write_register(address=0x30, value=self.goal_point_x_register, slave=self.slave_address)
+        self.client.write_register(address=0x30, value=self.goal_point_z_register, slave=self.slave_address)
 
     def read_x_axis_moving_status(self):
         self.x_axis_moving_status_before = self.x_axis_moving_status
