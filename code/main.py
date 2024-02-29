@@ -566,7 +566,7 @@ class App(tk.Tk):
             self.entry_place_2.disable()
             self.entry_place_3.disable()
             self.entry_place_4.disable()
-            self.entry_place_5.disable()  
+            self.entry_place_5.disable()
 
             self.radio_point.deactivate()
             self.text_z_entry.disable()  
@@ -697,52 +697,52 @@ class App(tk.Tk):
         self.text_z_acc_num.change_text(self.protocol_z.z_axis_actual_acc)
 
     #     # Moving Status
-    #     if self.protocol_y.y_axis_moving_status == "Idle" and self.protocol_x.x_axis_moving_status == "Idle":
-    #         # Hide navi message
-    #         self.message_navi.hide()
-    #         # When finish moving
-    #         if self.protocol_y.y_axis_moving_status_before != "Idle" or self.protocol_x.x_axis_moving_status_before != "Idle":
-    #             self.handle_finish_moving()
-    #             if self.protocol_y.y_axis_moving_status_before == "Jog Pick":
-    #                 if self.mode == "Protocol":
-    #                     self.protocol_y.read_pick_tray_position()
-    #                 self.tray_pick.origin_x = self.protocol_y.pick_tray_origin_x / 10
-    #                 self.tray_pick.origin_y = self.protocol_y.pick_tray_origin_y / 10
-    #                 self.tray_pick.orientation = self.protocol_y.pick_tray_orientation
-    #                 self.tray_pick.create_tray()
-    #                 self.jogging = False
-    #                 self.show_tray_pick = True
-    #             elif self.protocol_y.y_axis_moving_status_before == "Jog Place":
-    #                 if self.mode == "Protocol":
-    #                     self.protocol_y.read_place_tray_position()
-    #                 self.tray_place.origin_x = self.protocol_y.place_tray_origin_x / 10
-    #                 self.tray_place.origin_y = self.protocol_y.place_tray_origin_y / 10
-    #                 self.tray_place.orientation = self.protocol_y.place_tray_orientation
-    #                 self.tray_place.create_tray()
-    #                 self.jogging = False
-    #                 self.show_tray_place = True
-    #             elif self.protocol_y.y_axis_moving_status_before == "Home" or self.protocol_x.x_axis_moving_status_before == "Home":
-    #                 self.homing = False
-    #             elif self.protocol_y.y_axis_moving_status_before == "Go Place" or self.protocol_x.x_axis_moving_status_before == "Run":
-    #                 self.running = False
-    #             elif self.protocol_y.y_axis_moving_status_before == "Go Point" or self.protocol_x.x_axis_moving_status_before == "Run":
-    #                 self.running = False
-    #             self.protocol_y.y_axis_moving_status_before = "Idle"
-    #     else:
-    #         # Show navi message
-    #         if self.protocol_y.y_axis_moving_status == "Jog Pick":
-    #             self.message_navi.change_text("Jogging")
-    #         elif self.protocol_y.y_axis_moving_status == "Jog Place":
-    #             self.message_navi.change_text("Jogging")
-    #         elif self.protocol_y.y_axis_moving_status == "Home":
-    #             self.message_navi.change_text("Homing")
-    #         elif self.protocol_y.y_axis_moving_status == "Go Pick":
-    #             self.message_navi.change_text("Going to Pick")
-    #         elif self.protocol_y.y_axis_moving_status == "Go Place":
-    #             self.message_navi.change_text("Going to Place")
-    #         elif self.protocol_y.y_axis_moving_status == "Go Point":
-    #             self.message_navi.change_text("Going to Point")
-    #         self.message_navi.show()
+        if self.protocol_z.z_axis_moving_status == "Idle":
+            # Hide navi message
+            # self.message_navi.hide()
+            # When finish moving
+            if self.protocol_z.z_axis_moving_status_before != "Idle":
+                self.handle_finish_moving()
+                # if self.protocol_z.z_axis_moving_status_before == "Jog Pick":
+                #     if self.mode == "Protocol":
+                #         self.protocol_z.read_pick_tray_position()
+                #     self.tray_pick.origin_x = self.protocol_z.pick_tray_origin_x / 10
+                #     self.tray_pick.origin_y = self.protocol_z.pick_tray_origin_y / 10
+                #     self.tray_pick.orientation = self.protocol_z.pick_tray_orientation
+                #     self.tray_pick.create_tray()
+                #     self.jogging = False
+                #     self.show_tray_pick = True
+                # elif self.protocol_z.y_axis_moving_status_before == "Jog Place":
+                #     if self.mode == "Protocol":
+                #         self.protocol_z.read_place_tray_position()
+                #     self.tray_place.origin_x = self.protocol_z.place_tray_origin_x / 10
+                #     self.tray_place.origin_y = self.protocol_z.place_tray_origin_y / 10
+                #     self.tray_place.orientation = self.protocol_z.place_tray_orientation
+                #     self.tray_place.create_tray()
+                #     self.jogging = False
+                #     self.show_tray_place = True
+                # elif self.protocol_z.y_axis_moving_status_before == "Home" or self.protocol_x.x_axis_moving_status_before == "Home":
+                #     self.homing = False
+                # elif self.protocol_z.y_axis_moving_status_before == "Go Place" or self.protocol_x.x_axis_moving_status_before == "Run":
+                #     self.running = False
+                if self.protocol_z.z_axis_moving_status_before == "Go Point" :
+                    self.running = False
+                self.protocol_z.z_axis_moving_status_before = "Idle"
+        # else:
+        #     # Show navi message
+        #     if self.protocol_z.z_axis_moving_status == "Jog Pick":
+        #         self.message_navi.change_text("Jogging")
+        #     elif self.protocol_z.z_axis_moving_status == "Jog Place":
+        #         self.message_navi.change_text("Jogging")
+        #     elif self.protocol_z.z_axis_moving_status == "Home":
+        #         self.message_navi.change_text("Homing")
+        #     elif self.protocol_z.z_axis_moving_status == "Go Pick":
+        #         self.message_navi.change_text("Going to Pick")
+        #     elif self.protocol_z.z_axis_moving_status == "Go Place":
+        #         self.message_navi.change_text("Going to Place")
+        #     elif self.protocol_z.z_axis_moving_status == "Go Point":
+        #         self.message_navi.change_text("Going to Point")
+        #     self.message_navi.show()
 
     def handle_protocol_z(self):
         """
