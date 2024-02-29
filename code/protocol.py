@@ -78,8 +78,7 @@ class Protocol_Z(Binary):
         self.z_axis_actual_pos = 0.0
         self.z_axis_actual_spd = 0.0
         self.z_axis_actual_acc = 0.0
-        self.x_axis_moving_status_before = "Idle"
-        self.x_axis_moving_status = "Idle"
+        self.x_axis_actual_pos = 0.0
 
         self.pick_tray_origin_x = 0
         self.pick_tray_origin_y = 0
@@ -107,13 +106,13 @@ class Protocol_Z(Binary):
             self.register = self.client.read_holding_registers(address=0x00, count=0x46, slave=self.slave_address).registers
             self.read_end_effector_status()
             self.read_z_axis_moving_status()
-            self.read_x_axis_moving_status()
             self.read_z_axis_actual_motion()
+            self.read_x_axis_actual_motion()
             print("Vacuum:", self.vacuum)
             print("Gripper:", self.gripper)
             print("Pos:", self.z_axis_actual_pos, "\tSpd:", self.z_axis_actual_spd, "\tAcc:", self.z_axis_actual_acc)
             print("Z-Axis Moving Status:", self.z_axis_moving_status)
-            # print("X-Axis Moving:", self.x_axis_moving_status)
+            print(self.register)
             self.routine_normal = True
         except Exception as e:
             print("Routine Error", e)
@@ -169,6 +168,10 @@ class Protocol_Z(Binary):
             self.end_effector_status_register = 0b0000
         self.client.write_register(address=0x03, value=self.end_effector_status_register, slave=self.slave_address)
 
+    def write_pick_place_order(self, pick,place):
+        self.client.write_register(address=0x20, value=pick, slave=self.slave_address)
+        self.client.write_register(address=0x21, value=place, slave=self.slave_address)
+
     def read_z_axis_moving_status(self):
         self.z_axis_moving_status_before = self.z_axis_moving_status
         z_axis_moving_status_binary = self.binary_crop(6, self.decimal_to_binary(self.register[0x10]))[::-1]
@@ -192,119 +195,122 @@ class Protocol_Z(Binary):
         self.z_axis_actual_spd = self.register[0x12] / 10
         self.z_axis_actual_acc = self.register[0x13] / 10
 
+    def read_x_axis_actual_motion(self):
+        self.x_axis_actual_pos = self.binary_reverse_twos_complement(self.register[0x40]) / 10
+
     def write_goal_point(self, z):
         # self.goal_point_x_register = self.binary_twos_complement(int(x*10))
         self.goal_point_z_register = self.binary_twos_complement(int(z*10))
         # self.client.write_register(address=0x30, value=self.goal_point_x_register, slave=self.slave_address)
         self.client.write_register(address=0x30, value=self.goal_point_z_register, slave=self.slave_address)
 
-    def read_x_axis_moving_status(self):
-        self.x_axis_moving_status_before = self.x_axis_moving_status
-        x_axis_moving_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x40]))[::-1]
-        if x_axis_moving_status_binary[0] == "1":
-            self.x_axis_moving_status = "Home"
-        elif x_axis_moving_status_binary[1] == "1":
-            self.x_axis_moving_status = "Run"
-        elif x_axis_moving_status_binary[2] == "1":
-            self.x_axis_moving_status = "Jog Left"
-        elif x_axis_moving_status_binary[3] == "1":
-            self.x_axis_moving_status = "Jog Right"
-        else:
-            self.x_axis_moving_status = "Idle"
+    # def read_x_axis_moving_status(self):
+    #     self.x_axis_moving_status_before = self.x_axis_moving_status
+    #     x_axis_moving_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x40]))[::-1]
+    #     if x_axis_moving_status_binary[0] == "1":
+    #         self.x_axis_moving_status = "Home"
+    #     elif x_axis_moving_status_binary[1] == "1":
+    #         self.x_axis_moving_status = "Run"
+    #     elif x_axis_moving_status_binary[2] == "1":
+    #         self.x_axis_moving_status = "Jog Left"
+    #     elif x_axis_moving_status_binary[3] == "1":
+    #         self.x_axis_moving_status = "Jog Right"
+    #     else:
+    #         self.x_axis_moving_status = "Idle"
 
-    def write_x_axis_moving_status(self, command):
-        if command == "Home":
-            self.x_axis_moving_status_register = 0b01
-        elif command == "Run":
-            self.x_axis_moving_status_register = 0b10
-        elif command == "Idle":
-            self.x_axis_moving_status_register = 0b00
-        if self.usb_connect:
-            self.client.write_register(address=0x40, value=self.x_axis_moving_status_register, slave=self.slave_address)
+    # def write_x_axis_moving_status(self, command):
+    #     if command == "Home":
+    #         self.x_axis_moving_status_register = 0b01
+    #     elif command == "Run":
+    #         self.x_axis_moving_status_register = 0b10
+    #     elif command == "Idle":
+    #         self.x_axis_moving_status_register = 0b00
+    #     if self.usb_connect:
+    #         self.client.write_register(address=0x40, value=self.x_axis_moving_status_register, slave=self.slave_address)
 
-    def read_x_axis_target_motion(self):
-        self.x_axis_target_pos = self.binary_reverse_twos_complement(self.register[0x41]) / 10
-        self.x_axis_target_spd = self.register[0x42] / 10
-        self.x_axis_target_acc_time = self.register[0x43]
+    # def read_x_axis_target_motion(self):
+    #     self.x_axis_target_pos = self.binary_reverse_twos_complement(self.register[0x41]) / 10
+    #     self.x_axis_target_spd = self.register[0x42] / 10
+    #     self.x_axis_target_acc_time = self.register[0x43]
 
-    def write_x_axis_actual_motion(self, pos, spd):
-        self.x_axis_actual_pos_register = self.binary_twos_complement(int(pos * 10))
-        self.x_axis_actual_spd_register = int(spd * 10)
-        if self.usb_connect:
-            self.client.write_register(address=0x44, value=self.x_axis_actual_pos_register, slave=self.slave_address)
-            self.client.write_register(address=0x45, value=self.x_axis_actual_spd_register, slave=self.slave_address)
+    # def write_x_axis_actual_motion(self, pos, spd):
+    #     self.x_axis_actual_pos_register = self.binary_twos_complement(int(pos * 10))
+    #     self.x_axis_actual_spd_register = int(spd * 10)
+    #     if self.usb_connect:
+    #         self.client.write_register(address=0x44, value=self.x_axis_actual_pos_register, slave=self.slave_address)
+    #         self.client.write_register(address=0x45, value=self.x_axis_actual_spd_register, slave=self.slave_address)
 
 
-class Protocol_X(Binary):
-    """
-    Protocol X Class
-    """
-    def __init__(self):
-        self.host = "192.168.3.250"
+# class Protocol_X(Binary):
+#     """
+#     Protocol X Class
+#     """
+#     def __init__(self):
+#         self.host = "192.168.3.250"
 
-        self.register = [0,0,0,0,0,0] # Temporary (should be [])
+#         self.register = [0,0,0,0,0,0] # Temporary (should be [])
 
-        self.x_axis_moving_status_before = "Idle"
-        self.x_axis_moving_status = "Idle"
+#         self.x_axis_moving_status_before = "Idle"
+#         self.x_axis_moving_status = "Idle"
 
-        self.x_axis_actual_pos = 0.0
-        self.x_axis_actual_spd = 0.0
-        self.x_axis_actual_acc = 0.0
+#         self.x_axis_actual_pos = 0.0
+#         self.x_axis_actual_spd = 0.0
+#         self.x_axis_actual_acc = 0.0
 
-        self.client= ModbusTcpClient(self.host)
+#         self.client= ModbusTcpClient(self.host)
 
-        self.connection = self.client.connect()
-        print('x-Axis Connection Status :', self.connection)
+#         self.connection = self.client.connect()
+#         print('x-Axis Connection Status :', self.connection)
 
-        if self.connection:
-            self.write_x_axis_moving_status("Home")
+#         if self.connection:
+#             self.write_x_axis_moving_status("Home")
 
-    def read_holding_registers(self):
-        self.register = self.client.read_holding_registers(address=0x00, count=5).registers
+#     def read_holding_registers(self):
+#         self.register = self.client.read_holding_registers(address=0x00, count=5).registers
 
-    def write_x_axis_moving_status(self, command):
-        if command == "Idle":
-            self.x_axis_moving_status_register = 0b0000
-        elif command == "Home":
-            self.x_axis_moving_status_register = 0b0001
-        elif command == "Run":
-            self.x_axis_moving_status_register = 0b0010
-        elif command == "Jog Left":
-            self.x_axis_moving_status_register = 0b0100
-        elif command == "Jog Right":
-            self.x_axis_moving_status_register = 0b1000
-        self.client.write_register(address=0x00, value=self.x_axis_moving_status_register)
+#     def write_x_axis_moving_status(self, command):
+#         if command == "Idle":
+#             self.x_axis_moving_status_register = 0b0000
+#         elif command == "Home":
+#             self.x_axis_moving_status_register = 0b0001
+#         elif command == "Run":
+#             self.x_axis_moving_status_register = 0b0010
+#         elif command == "Jog Left":
+#             self.x_axis_moving_status_register = 0b0100
+#         elif command == "Jog Right":
+#             self.x_axis_moving_status_register = 0b1000
+#         self.client.write_register(address=0x00, value=self.x_axis_moving_status_register)
 
-    def read_x_axis_moving_status(self):
-        self.x_axis_moving_status_before = self.x_axis_moving_status
-        x_axis_moving_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x00]))[::-1]
-        if x_axis_moving_status_binary[0] == "1":
-            self.x_axis_moving_status = "Home"
-        elif x_axis_moving_status_binary[1] == "1":
-            self.x_axis_moving_status = "Run"
-        elif x_axis_moving_status_binary[2] == "1":
-            self.x_axis_moving_status = "Jog Left"
-        elif x_axis_moving_status_binary[3] == "1":
-            self.x_axis_moving_status = "Jog Right"
-        else:
-            self.x_axis_moving_status = "Idle"
+#     def read_x_axis_moving_status(self):
+#         self.x_axis_moving_status_before = self.x_axis_moving_status
+#         x_axis_moving_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x00]))[::-1]
+#         if x_axis_moving_status_binary[0] == "1":
+#             self.x_axis_moving_status = "Home"
+#         elif x_axis_moving_status_binary[1] == "1":
+#             self.x_axis_moving_status = "Run"
+#         elif x_axis_moving_status_binary[2] == "1":
+#             self.x_axis_moving_status = "Jog Left"
+#         elif x_axis_moving_status_binary[3] == "1":
+#             self.x_axis_moving_status = "Jog Right"
+#         else:
+#             self.x_axis_moving_status = "Idle"
 
-    def read_x_axis_actual_motion(self):
-        actual_pos_struct = struct.pack("HH", self.register[0x01], self.register[0x02])
-        self.x_axis_actual_pos = int((struct.unpack("i", actual_pos_struct)[0]) / 1000) / 10.0 # mm
-        actual_spd_struct = struct.pack("HH", self.register[0x03], self.register[0x04])
-        self.x_axis_actual_spd = int((struct.unpack("I", actual_spd_struct)[0]) / 1000) / 10.0 # mm/s
+#     def read_x_axis_actual_motion(self):
+#         actual_pos_struct = struct.pack("HH", self.register[0x01], self.register[0x02])
+#         self.x_axis_actual_pos = int((struct.unpack("i", actual_pos_struct)[0]) / 1000) / 10.0 # mm
+#         actual_spd_struct = struct.pack("HH", self.register[0x03], self.register[0x04])
+#         self.x_axis_actual_spd = int((struct.unpack("I", actual_spd_struct)[0]) / 1000) / 10.0 # mm/s
 
-    def write_x_axis_target_motion(self, pos, spd, acc_time):
-        # Limit position range between -140 to 140 mm 
-        if pos < -140:
-            pos = -140
-        elif pos > 140:
-            pos = 140
-        target_pos_struct   = struct.pack("i", int(pos*10000))
-        target_pos_register = struct.unpack("HH", target_pos_struct)
-        spd = min(spd, 300) # Limit maximum speed to 300 mm/s
-        target_spd_struct   = struct.pack("I", int(spd*60*100))
-        target_spd_register = struct.unpack("HH", target_spd_struct)
-        target_acc_time_register = acc_time
-        self.client.write_registers(address=0x05, values=[target_pos_register[0], target_pos_register[1], target_spd_register[0], target_spd_register[1], target_acc_time_register])
+#     def write_x_axis_target_motion(self, pos, spd, acc_time):
+#         # Limit position range between -140 to 140 mm 
+#         if pos < -140:
+#             pos = -140
+#         elif pos > 140:
+#             pos = 140
+#         target_pos_struct   = struct.pack("i", int(pos*10000))
+#         target_pos_register = struct.unpack("HH", target_pos_struct)
+#         spd = min(spd, 300) # Limit maximum speed to 300 mm/s
+#         target_spd_struct   = struct.pack("I", int(spd*60*100))
+#         target_spd_register = struct.unpack("HH", target_spd_struct)
+#         target_acc_time_register = acc_time
+#         self.client.write_registers(address=0x05, values=[target_pos_register[0], target_pos_register[1], target_spd_register[0], target_spd_register[1], target_acc_time_register])

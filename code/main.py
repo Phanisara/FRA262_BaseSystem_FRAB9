@@ -168,45 +168,46 @@ class App(tk.Tk):
         # ---------------------------------- Group operation ----------------------------------
         self.operation_mode = "Jog"
         self.text_operation = TextBox(canvas=self.canvas_field, x=540, y=412.5, text="Operation", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
-        self.line_seperate_2 = Line(canvas=self.canvas_field, point_1=(400, 569.5), point_2=(680, 569.5), width=1, color=Color.lightgray)
+        self.line_seperate_2 = Line(canvas=self.canvas_field, point_1=(400, 594.5), point_2=(680, 594.5), width=1, color=Color.lightgray)
 
             # ------------------------- Jog Mode -------------------------
         self.jogging = False
         self.radio_jog  = RadioButton(canvas=self.canvas_field, x=440, y=437.5, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Jog Mode  ", font_name="Inter-Regular", text_size=font_size_button_small, on_default=True)
-        self.text_pick = TextBox(canvas=self.canvas_field, x=410, y=486, text="Pick", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_place = TextBox(canvas=self.canvas_field, x=410, y=524.5, text="Place", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.press_set_shelves = PressButton(canvas=self.canvas_field, x=465, y=467, w=150, h=20, r=10, active_color=Color.gray, inactive_color=Color.lightgray, text="Set shelves", font_name="Inter-SemiBold", text_size=font_size_detail, active_default=True)
+        self.text_pick = TextBox(canvas=self.canvas_field, x=410, y=516, text="Pick", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_place = TextBox(canvas=self.canvas_field, x=410, y=554.5, text="Place", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="w")
 
-        self.line_pick_place_1 = Line(canvas=self.canvas_field, point_1=(470, 500), point_2=(470, 509.5), width=1, color=Color.lightgray)
-        self.line_pick_place_2 = Line(canvas=self.canvas_field, point_1=(515, 500), point_2=(515, 509.5), width=1, color=Color.lightgray)
-        self.line_pick_place_3 = Line(canvas=self.canvas_field, point_1=(560, 500), point_2=(560, 509.5), width=1, color=Color.lightgray)
-        self.line_pick_place_4 = Line(canvas=self.canvas_field, point_1=(605, 500), point_2=(605, 509.5), width=1, color=Color.lightgray)
-        self.line_pick_place_5 = Line(canvas=self.canvas_field, point_1=(650, 500), point_2=(650, 509.5), width=1, color=Color.lightgray)
+        self.line_pick_place_1 = Line(canvas=self.canvas_field, point_1=(470, 530), point_2=(470, 539.5), width=1, color=Color.lightgray)
+        self.line_pick_place_2 = Line(canvas=self.canvas_field, point_1=(515, 530), point_2=(515, 539.5), width=1, color=Color.lightgray)
+        self.line_pick_place_3 = Line(canvas=self.canvas_field, point_1=(560, 530), point_2=(560, 539.5), width=1, color=Color.lightgray)
+        self.line_pick_place_4 = Line(canvas=self.canvas_field, point_1=(605, 530), point_2=(605, 539.5), width=1, color=Color.lightgray)
+        self.line_pick_place_5 = Line(canvas=self.canvas_field, point_1=(650, 530), point_2=(650, 539.5), width=1, color=Color.lightgray)
 
-        self.entry_pick_1 = OrderEntry(master=self, canvas=self.canvas_field, x=455, y=471, w=30, h=30, color=Color.gray)
-        self.entry_pick_2 = OrderEntry(master=self, canvas=self.canvas_field, x=500, y=471, w=30, h=30, color=Color.gray)
-        self.entry_pick_3 = OrderEntry(master=self, canvas=self.canvas_field, x=545, y=471, w=30, h=30, color=Color.gray)
-        self.entry_pick_4 = OrderEntry(master=self, canvas=self.canvas_field, x=590, y=471, w=30, h=30, color=Color.gray)
-        self.entry_pick_5 = OrderEntry(master=self, canvas=self.canvas_field, x=635, y=471, w=30, h=30, color=Color.gray)
+        self.entry_pick_1 = OrderEntry(master=self, canvas=self.canvas_field, x=455, y=501, w=30, h=30, color=Color.gray)
+        self.entry_pick_2 = OrderEntry(master=self, canvas=self.canvas_field, x=500, y=501, w=30, h=30, color=Color.gray)
+        self.entry_pick_3 = OrderEntry(master=self, canvas=self.canvas_field, x=545, y=501, w=30, h=30, color=Color.gray)
+        self.entry_pick_4 = OrderEntry(master=self, canvas=self.canvas_field, x=590, y=501, w=30, h=30, color=Color.gray)
+        self.entry_pick_5 = OrderEntry(master=self, canvas=self.canvas_field, x=635, y=501, w=30, h=30, color=Color.gray)
 
-        self.entry_place_1 = OrderEntry(master=self, canvas=self.canvas_field, x=455, y=509.5, w=30, h=30, color=Color.gray)
-        self.entry_place_2 = OrderEntry(master=self, canvas=self.canvas_field, x=500, y=509.5, w=30, h=30, color=Color.gray)
-        self.entry_place_3 = OrderEntry(master=self, canvas=self.canvas_field, x=545, y=509.5, w=30, h=30, color=Color.gray)
-        self.entry_place_4 = OrderEntry(master=self, canvas=self.canvas_field, x=590, y=509.5, w=30, h=30, color=Color.gray)
-        self.entry_place_5 = OrderEntry(master=self, canvas=self.canvas_field, x=635, y=509.5, w=30, h=30, color=Color.gray)
+        self.entry_place_1 = OrderEntry(master=self, canvas=self.canvas_field, x=455, y=539.5, w=30, h=30, color=Color.gray)
+        self.entry_place_2 = OrderEntry(master=self, canvas=self.canvas_field, x=500, y=539.5, w=30, h=30, color=Color.gray)
+        self.entry_place_3 = OrderEntry(master=self, canvas=self.canvas_field, x=545, y=539.5, w=30, h=30, color=Color.gray)
+        self.entry_place_4 = OrderEntry(master=self, canvas=self.canvas_field, x=590, y=539.5, w=30, h=30, color=Color.gray)
+        self.entry_place_5 = OrderEntry(master=self, canvas=self.canvas_field, x=635, y=539.5, w=30, h=30, color=Color.gray)
 
             # ------------------------- Point Mode -------------------------
         self.radio_point = RadioButton(canvas=self.canvas_field, x=550, y=437.5, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
-        self.text_z_point = TextBox(canvas=self.canvas_field, x=540, y=490, text="z-axis position", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
-        self.text_z_entry = Entry(master=self, canvas=self.canvas_field, x=480, y=507.5, w=100, h=30, color=Color.blue)
-        self.text_z_point_mm = TextBox(canvas=self.canvas_field, x=600, y=522.5, text="mm", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.text_z_point = TextBox(canvas=self.canvas_field, x=540, y=495, text="z-axis position", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.text_z_entry = Entry(master=self, canvas=self.canvas_field, x=480, y=520.5, w=100, h=30, color=Color.blue)
+        self.text_z_point_mm = TextBox(canvas=self.canvas_field, x=600, y=532.5, text="mm", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
         self.text_z_point.hide()
         self.text_z_entry.hide()
         self.text_z_point_mm.hide()
 
         # ---------------------------------- Group movement ----------------------------------
-        self.text_movement = TextBox(canvas=self.canvas_field, x=540, y=599.5, text="Movement", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
-        self.press_home = PressButton(canvas=self.canvas_field, x=465, y=635, w=150, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", font_name="Inter-SemiBold", text_size=font_size_button_home, active_default=True)
-        self.press_run  = PressButton(canvas=self.canvas_field, x=465, y=675, w=150, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", font_name="Inter-SemiBold", text_size=font_size_button_run, active_default=False)
+        self.text_movement = TextBox(canvas=self.canvas_field, x=540, y=619.5, text="Movement", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
+        self.press_home = PressButton(canvas=self.canvas_field, x=465, y=655, w=150, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", font_name="Inter-SemiBold", text_size=font_size_button_home, active_default=True)
+        self.press_run  = PressButton(canvas=self.canvas_field, x=465, y=695, w=150, h=35, r=15, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", font_name="Inter-SemiBold", text_size=font_size_button_run, active_default=False)
         self.running = False
         self.homing = False
 
@@ -215,7 +216,7 @@ class App(tk.Tk):
         self.message_error.hide()
 
         # ---------------------------------- Connection ----------------------------------
-        self.message_connection = MessageBox(canvas=self.canvas_field, x=380, y=610, width_field=320, text="\" Connection Disconnected \"", color=Color.red, align="Center", font_name="Inter-Bold", size=font_size_message_error)
+        self.message_connection = MessageBox(canvas=self.canvas_field, x=380, y=630, width_field=320, text="\" Connection Disconnected \"", color=Color.red, align="Center", font_name="Inter-Bold", size=font_size_message_error)
         self.message_connection.hide()
 
 
@@ -543,6 +544,12 @@ class App(tk.Tk):
                 if self.mode == "Graphic":
                     self.protocol_z.z_axis_moving_status = "pick"
                 elif self.mode == "Protocol":
+                    #Combine Order pick and place
+                    self.pick_out =  int(f"{self.order_pick_1}{self.order_pick_2}{self.order_pick_3}{self.order_pick_4}{self.order_pick_5}")
+                    self.place_out = int(f"{self.order_place_1}{self.order_place_2}{self.order_place_3}{self.order_place_4}{self.order_place_5}")
+
+                    self.protocol_z.write_pick_place_order(self.pick_out,self.place_out)
+
                     self.protocol_z.write_base_system_status("Run Tray Mode")
             elif self.operation_mode == "Point":
                 if self.mode == "Graphic":
@@ -691,7 +698,7 @@ class App(tk.Tk):
     
 
         # Actual motion value
-        self.text_x_pos_num.change_text(self.protocol_z.z_axis_actual_pos)
+        self.text_x_pos_num.change_text(self.protocol_z.x_axis_actual_pos)
         self.text_z_pos_num.change_text(self.protocol_z.z_axis_actual_pos)
         self.text_z_spd_num.change_text(self.protocol_z.z_axis_actual_spd)
         self.text_z_acc_num.change_text(self.protocol_z.z_axis_actual_acc)
@@ -703,6 +710,12 @@ class App(tk.Tk):
             # When finish moving
             if self.protocol_z.z_axis_moving_status_before != "Idle":
                 self.handle_finish_moving()
+                if self.protocol_z.z_axis_moving_status_before == "Go Point":
+                    self.running = False
+                elif self.protocol_z.z_axis_moving_status_before == "Home":
+                    self.homing = False
+                self.protocol_z.z_axis_moving_status_before = "Idle"
+
                 # if self.protocol_z.z_axis_moving_status_before == "Jog Pick":
                 #     if self.mode == "Protocol":
                 #         self.protocol_z.read_pick_tray_position()
@@ -721,13 +734,10 @@ class App(tk.Tk):
                 #     self.tray_place.create_tray()
                 #     self.jogging = False
                 #     self.show_tray_place = True
-                # elif self.protocol_z.y_axis_moving_status_before == "Home" or self.protocol_x.x_axis_moving_status_before == "Home":
-                #     self.homing = False
+
                 # elif self.protocol_z.y_axis_moving_status_before == "Go Place" or self.protocol_x.x_axis_moving_status_before == "Run":
                 #     self.running = False
-                if self.protocol_z.z_axis_moving_status_before == "Go Point" :
-                    self.running = False
-                self.protocol_z.z_axis_moving_status_before = "Idle"
+
         # else:
         #     # Show navi message
         #     if self.protocol_z.z_axis_moving_status == "Jog Pick":
