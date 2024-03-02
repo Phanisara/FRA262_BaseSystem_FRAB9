@@ -112,7 +112,7 @@ class Protocol_Z(Binary):
             print("Gripper:", self.gripper)
             print("Pos:", self.z_axis_actual_pos, "\tSpd:", self.z_axis_actual_spd, "\tAcc:", self.z_axis_actual_acc)
             print("Z-Axis Moving Status:", self.z_axis_moving_status)
-            print(self.register)
+            # print(self.register)
             self.routine_normal = True
         except Exception as e:
             print("Routine Error", e)
@@ -134,16 +134,14 @@ class Protocol_Z(Binary):
             self.usb_connect = False
 
     def write_base_system_status(self, command):
-        if command == "Set Pick Tray":
-            self.base_system_status_register = 0b00001
-        elif command == "Set Place Tray":
-            self.base_system_status_register = 0b00010
+        if command == "Set Shelves":
+            self.base_system_status_register = 0b0001
         elif command == "Home":
-            self.base_system_status_register = 0b00100
+            self.base_system_status_register = 0b0010
         elif command == "Run Tray Mode":
-            self.base_system_status_register = 0b01000
+            self.base_system_status_register = 0b0100
         elif command == "Run Point Mode":
-            self.base_system_status_register = 0b10000
+            self.base_system_status_register = 0b1000
         self.client.write_register(address=0x01, value=self.base_system_status_register, slave=self.slave_address)
         print("Write Base System Status to Client")
 
@@ -176,16 +174,14 @@ class Protocol_Z(Binary):
         self.z_axis_moving_status_before = self.z_axis_moving_status
         z_axis_moving_status_binary = self.binary_crop(6, self.decimal_to_binary(self.register[0x10]))[::-1]
         if z_axis_moving_status_binary[0] == "1":
-            self.z_axis_moving_status = "Jog Pick"
+            self.z_axis_moving_status = "Set Shelves"
         elif z_axis_moving_status_binary[1] == "1":
-            self.z_axis_moving_status = "Jog Place"
-        elif z_axis_moving_status_binary[2] == "1":
             self.z_axis_moving_status = "Home"
-        elif z_axis_moving_status_binary[3] == "1":
+        elif z_axis_moving_status_binary[2] == "1":
             self.z_axis_moving_status = "Go Pick"
-        elif z_axis_moving_status_binary[4] == "1":
+        elif z_axis_moving_status_binary[3] == "1":
             self.z_axis_moving_status = "Go Place"
-        elif z_axis_moving_status_binary[5] == "1":
+        elif z_axis_moving_status_binary[4] == "1":
             self.z_axis_moving_status = "Go Point"
         else:
             self.z_axis_moving_status = "Idle"

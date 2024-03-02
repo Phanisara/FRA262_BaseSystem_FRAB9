@@ -54,6 +54,7 @@ class App(tk.Tk):
         self.handle_toggle_vacuum()
         self.handle_toggle_movement()
         self.handle_radio_operation()
+        self.handle_press_set_shelves()
         self.handle_press_home()
         self.handle_press_run()
         
@@ -581,6 +582,40 @@ class App(tk.Tk):
             self.press_home.deactivate()
             self.press_run.pressed = False
 
+    def handle_press_set_shelves(self):
+        """
+        This function handles when user press "Set Set Shelves" button
+        """
+        if self.press_set_shelves.pressed:
+            print(f"press Home")
+            if self.mode == "Graphic":
+                self.protocol_z.z_axis_moving_status = "Set Shelves"
+            elif self.mode == "Protocol":
+                self.protocol_z.write_base_system_status("Set Shelves")
+            self.jogging = True
+            self.toggle_vacuum.deactivate()
+            self.toggle_movement.deactivate()
+            
+            self.radio_jog.deactivate()
+            self.entry_pick_1.disable()
+            self.entry_pick_2.disable()
+            self.entry_pick_3.disable()
+            self.entry_pick_4.disable()
+            self.entry_pick_5.disable()
+
+            self.entry_place_1.disable()
+            self.entry_place_2.disable()
+            self.entry_place_3.disable()
+            self.entry_place_4.disable()
+            self.entry_place_5.disable()
+
+            self.radio_point.deactivate()
+            self.press_set_shelves.deactivate()
+            self.text_z_entry.disable()  
+            self.press_run.deactivate()
+            self.press_home.deactivate()
+            self.press_set_shelves.pressed = False
+
     def handle_finish_moving(self):
         """
         This function handles when finish moving to reactivate elements
@@ -603,6 +638,7 @@ class App(tk.Tk):
 
         self.radio_point.activate()
         self.text_z_entry.enable()  
+        self.press_set_shelves.activate()
         self.press_run.activate()
         self.press_home.activate()
         self.press_run.activate()
@@ -714,27 +750,9 @@ class App(tk.Tk):
                     self.running = False
                 elif self.protocol_z.z_axis_moving_status_before == "Home":
                     self.homing = False
+                elif self.protocol_z.z_axis_moving_status_before == "Set Shelves":
+                    self.jogging = False
                 self.protocol_z.z_axis_moving_status_before = "Idle"
-
-                # if self.protocol_z.z_axis_moving_status_before == "Jog Pick":
-                #     if self.mode == "Protocol":
-                #         self.protocol_z.read_pick_tray_position()
-                #     self.tray_pick.origin_x = self.protocol_z.pick_tray_origin_x / 10
-                #     self.tray_pick.origin_y = self.protocol_z.pick_tray_origin_y / 10
-                #     self.tray_pick.orientation = self.protocol_z.pick_tray_orientation
-                #     self.tray_pick.create_tray()
-                #     self.jogging = False
-                #     self.show_tray_pick = True
-                # elif self.protocol_z.y_axis_moving_status_before == "Jog Place":
-                #     if self.mode == "Protocol":
-                #         self.protocol_z.read_place_tray_position()
-                #     self.tray_place.origin_x = self.protocol_z.place_tray_origin_x / 10
-                #     self.tray_place.origin_y = self.protocol_z.place_tray_origin_y / 10
-                #     self.tray_place.orientation = self.protocol_z.place_tray_orientation
-                #     self.tray_place.create_tray()
-                #     self.jogging = False
-                #     self.show_tray_place = True
-
                 # elif self.protocol_z.y_axis_moving_status_before == "Go Place" or self.protocol_x.x_axis_moving_status_before == "Run":
                 #     self.running = False
 
@@ -857,7 +875,7 @@ class App(tk.Tk):
         """
         if self.running:   print("Running")
         if self.homing:    print("Homing")
-        if self.jogging:   print("Jogging")
+        if self.jogging:   print("jogging Set Shelve")
         if self.vacuum:    print("Vacuum")
 
 if __name__ == "__main__":
