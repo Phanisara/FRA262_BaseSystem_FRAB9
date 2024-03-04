@@ -660,6 +660,8 @@ class App(tk.Tk):
         """
         This function handles when connection miss a heartbeat
         """
+        self.message_connection.show()
+
         self.toggle_vacuum.deactivate()
         self.toggle_movement.deactivate()
 
@@ -695,6 +697,9 @@ class App(tk.Tk):
         self.text_z_pos_num.activate(self.text_z_pos_num.text, Color.blue)
         self.text_z_spd_num.activate(self.text_z_spd_num.text, Color.blue)
         self.text_z_acc_num.activate(self.text_z_acc_num.text, Color.blue)
+
+        
+
         if not self.running and not self.homing and not self.jogging:
             self.radio_jog.activate()  
             self.entry_pick_1.enable()
@@ -715,6 +720,9 @@ class App(tk.Tk):
             self.press_home.activate()
             self.press_run.activate()
             self.press_home.activate()
+            
+            self.toggle_movement.activate()
+            self.toggle_vacuum.activate()
 
     def handle_ui_change(self):
         """
@@ -785,7 +793,7 @@ class App(tk.Tk):
                 self.protocol_z.usb_connect_before = True
             # Check if there is protocol error from user (y-axis)
             if self.protocol_z.routine_normal == False:
-                self.message_connection.change_text("Protocol Error from Y-Axis")
+                self.message_connection.change_text("Protocol Error from Z-Axis")
                 self.handle_disconnected()
             else:
                 # Do protocol as normal every 200 ms
