@@ -177,7 +177,7 @@ class App(tk.Tk):
         self.press_set_shelves = PressButton(canvas=self.canvas_field, x=465, y=467, w=150, h=20, r=10, active_color=Color.gray, inactive_color=Color.lightgray, text="Set shelves", font_name="Inter-SemiBold", text_size=font_size_detail, active_default=True)
         self.text_pick = TextBox(canvas=self.canvas_field, x=410, y=516, text="Pick", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="w")
         self.text_place = TextBox(canvas=self.canvas_field, x=410, y=554.5, text="Place", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-
+    
         self.line_pick_place_1 = Line(canvas=self.canvas_field, point_1=(470, 530), point_2=(470, 539.5), width=1, color=Color.lightgray)
         self.line_pick_place_2 = Line(canvas=self.canvas_field, point_1=(515, 530), point_2=(515, 539.5), width=1, color=Color.lightgray)
         self.line_pick_place_3 = Line(canvas=self.canvas_field, point_1=(560, 530), point_2=(560, 539.5), width=1, color=Color.lightgray)
@@ -195,7 +195,7 @@ class App(tk.Tk):
         self.entry_place_3 = OrderEntry(master=self, canvas=self.canvas_field, x=545, y=539.5, w=30, h=30, color=Color.gray)
         self.entry_place_4 = OrderEntry(master=self, canvas=self.canvas_field, x=590, y=539.5, w=30, h=30, color=Color.gray)
         self.entry_place_5 = OrderEntry(master=self, canvas=self.canvas_field, x=635, y=539.5, w=30, h=30, color=Color.gray)
-
+    
             # ------------------------- Point Mode -------------------------
         self.radio_point = RadioButton(canvas=self.canvas_field, x=550, y=437.5, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
         self.text_z_point = TextBox(canvas=self.canvas_field, x=540, y=495, text="z-axis position", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
@@ -243,10 +243,12 @@ class App(tk.Tk):
         # Click Point Mode
         if self.operation_mode == "Jog" and self.radio_point.on:
             self.grid.delete_point(self.dot_point)
+            self.grid.delete_all_dots()
             self.radio_jog.turn_off()
             self.operation_mode = "Point"
             self.text_pick.hide()
             self.text_place.hide()
+            self.press_set_shelves.hide()
 
             self.line_pick_place_1.hide()
             self.line_pick_place_2.hide()
@@ -281,6 +283,7 @@ class App(tk.Tk):
             self.operation_mode = "Jog"
             self.text_pick.show()
             self.text_place.show()
+            self.press_set_shelves.show()
 
             self.line_pick_place_1.show()
             self.line_pick_place_2.show()
@@ -457,15 +460,15 @@ class App(tk.Tk):
                 order_3 = f"{self.order_pick_3} to {self.order_place_3}"
                 order_4 = f"{self.order_pick_4} to {self.order_place_4}"
                 order_5 = f"{self.order_pick_5} to {self.order_place_5}"
-                order = {"order_1": {order_1}, "order_2": {order_2}, "order_3": {order_3}, "order_4": {order_4}, "order_5": {order_5}}
-                print(f"order: {order}")
+                # order = {"order_1": {order_1}, "order_2": {order_2}, "order_3": {order_3}, "order_4": {order_4}, "order_5": {order_5}}
+                # print(f"order: {order}")
 
 
     def validate_entry(self):
         """
         This function validates input in entry and show error message
         """
-        if self.operation_mode == "Point":
+        if self.operation_mode == "Point": 
             # Get value from Entry
             self.z_value = self.text_z_entry.get_value()
             # Validate Entry's Value
@@ -548,7 +551,7 @@ class App(tk.Tk):
                     #Combine Order pick and place
                     self.pick_out =  int(f"{self.order_pick_1}{self.order_pick_2}{self.order_pick_3}{self.order_pick_4}{self.order_pick_5}")
                     self.place_out = int(f"{self.order_place_1}{self.order_place_2}{self.order_place_3}{self.order_place_4}{self.order_place_5}")
-
+                    print(self.pick_out,self.place_out)
                     self.protocol_z.write_pick_place_order(self.pick_out,self.place_out)
 
                     self.protocol_z.write_base_system_status("Run Tray Mode")
@@ -576,6 +579,7 @@ class App(tk.Tk):
             self.entry_place_4.disable()
             self.entry_place_5.disable()
 
+            self.press_set_shelves.deactivate()
             self.radio_point.deactivate()
             self.text_z_entry.disable()  
             self.press_run.deactivate()
@@ -587,7 +591,12 @@ class App(tk.Tk):
         This function handles when user press "Set Set Shelves" button
         """
         if self.press_set_shelves.pressed:
-            print(f"press Home")
+
+            self.operation_mode = 'Point'
+            self.grid.delete_all_dots()
+            # self.grid.delete_point(self.dot)
+            self.operation_mode = 'Jog'
+
             if self.mode == "Graphic":
                 self.protocol_z.z_axis_moving_status = "Set Shelves"
             elif self.mode == "Protocol":
@@ -720,7 +729,7 @@ class App(tk.Tk):
             self.press_home.activate()
             self.press_run.activate()
             self.press_home.activate()
-            
+
             self.toggle_movement.activate()
             self.toggle_vacuum.activate()
 
@@ -759,6 +768,20 @@ class App(tk.Tk):
                 elif self.protocol_z.z_axis_moving_status_before == "Home":
                     self.homing = False
                 elif self.protocol_z.z_axis_moving_status_before == "Set Shelves":
+                    if self.mode == "Protocol":
+                        self.protocol_z.read_Shelve_position()
+
+                    self.target_z = self.protocol_z.shelve_1
+                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+                    self.target_z = self.protocol_z.shelve_2
+                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+                    self.target_z = self.protocol_z.shelve_3
+                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+                    self.target_z = self.protocol_z.shelve_4
+                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+                    self.target_z = self.protocol_z.shelve_5
+                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+
                     self.jogging = False
                 self.protocol_z.z_axis_moving_status_before = "Idle"
                 # elif self.protocol_z.y_axis_moving_status_before == "Go Place" or self.protocol_x.x_axis_moving_status_before == "Run":

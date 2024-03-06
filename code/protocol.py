@@ -80,12 +80,11 @@ class Protocol_Z(Binary):
         self.z_axis_actual_acc = 0.0
         self.x_axis_actual_pos = 0.0
 
-        self.pick_tray_origin_x = 0
-        self.pick_tray_origin_y = 0
-        self.pick_tray_orientation = 0
-        self.place_tray_origin_x = 0
-        self.place_tray_origin_y = 0
-        self.place_tray_orientation = 0
+        self.shelve_1 = 0
+        self.shelve_2 = 0
+        self.shelve_3 = 0
+        self.shelve_4 = 0
+        self.shelve_5 = 0
 
         self.goal_point_x_register = 0
 
@@ -167,8 +166,9 @@ class Protocol_Z(Binary):
         self.client.write_register(address=0x03, value=self.end_effector_status_register, slave=self.slave_address)
 
     def write_pick_place_order(self, pick,place):
-        self.client.write_register(address=0x20, value=pick, slave=self.slave_address)
-        self.client.write_register(address=0x21, value=place, slave=self.slave_address)
+    
+        self.client.write_register(address=0x21, value=pick, slave=self.slave_address)
+        self.client.write_register(address=0x22, value=place, slave=self.slave_address)
 
     def read_z_axis_moving_status(self):
         self.z_axis_moving_status_before = self.z_axis_moving_status
@@ -200,6 +200,13 @@ class Protocol_Z(Binary):
         # self.client.write_register(address=0x30, value=self.goal_point_x_register, slave=self.slave_address)
         self.client.write_register(address=0x30, value=self.goal_point_z_register, slave=self.slave_address)
 
+    def read_Shelve_position(self):
+        self.shelve_1 = self.binary_reverse_twos_complement(self.register[0x23]) / 10
+        self.shelve_2 = self.binary_reverse_twos_complement(self.register[0x24]) / 10
+        self.shelve_3 = self.binary_reverse_twos_complement(self.register[0x25]) / 10
+        self.shelve_4 = self.binary_reverse_twos_complement(self.register[0x26]) / 10
+        self.shelve_5 = self.binary_reverse_twos_complement(self.register[0x27]) / 10
+        print("Shelve Readed")
     # def read_x_axis_moving_status(self):
     #     self.x_axis_moving_status_before = self.x_axis_moving_status
     #     x_axis_moving_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x40]))[::-1]
