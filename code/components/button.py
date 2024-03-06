@@ -31,7 +31,7 @@ class PressButton(Button):
         self.image = image
         self.pressed = False
         self.round_rec = RoundRectangle(self.canvas, x, y, w, h, r, color=self.active_color)
-        self.textbox = TextBox(self.canvas, x+w/2, y+h/2, self.text, self.font_name, self.text_size, Color.whitegray)
+        self.textbox = TextBox(self.canvas, x+w/2, y+h/2, self.text, self.font_name, self.text_size, Color.white)
         if self.image != None:
             self.photo_arrow_pick  = Photo(canvas=canvas, file_name="arrow_pick",  x=130, y=124)
             self.photo_arrow_place = Photo(canvas=canvas, file_name="arrow_place", x=130, y=124)
@@ -43,10 +43,12 @@ class PressButton(Button):
 
     def hide(self):
         self.round_rec.hide()
+        self.textbox.hide()
         self.click_area.hide()
 
     def show(self):
         self.round_rec.show()
+        self.textbox.show()
         self.click_area.show()
 
     def activate(self):
