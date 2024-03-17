@@ -561,7 +561,6 @@ class App(tk.Tk):
                 elif self.mode == "Protocol":
                     self.protocol_z.write_goal_point(self.point_target_z)
                     self.protocol_z.write_base_system_status("Run Point Mode")
-                # self.message_navi.change_text("Going to Point")
             self.running = True
 
             self.toggle_vacuum.deactivate()
@@ -718,8 +717,6 @@ class App(tk.Tk):
         self.text_z_spd_num.activate(self.text_z_spd_num.text, Color.blue)
         self.text_z_acc_num.activate(self.text_z_acc_num.text, Color.blue)
 
-        
-
         if not self.running and not self.homing and not self.jogging:
             self.radio_jog.activate()  
             self.entry_pick_1.enable()
@@ -748,32 +745,14 @@ class App(tk.Tk):
         """
         This function handles updating UI (according to protocol status) 
         """
-        # vacuum
-
-        # if self.protocol_z.vacuum == "1" and self.status_vacuum_before == 0:
-        #     self.turn_on_vacuum()
-        # # else:
-        # #     self.turn_off_vacuum()
-
-        # # Gripper
-        # if self.protocol_z.gripper == "1" and self.status_movement_before == 0:
-        #     self.turn_on_movement()
-        # # elif self.protocol_z.gripper == "0":
-        # #     self.turn_off_movement()
-
-        # self.status_vacuum_before = self.protocol_z.vacuum
-        # self.status_movement_before = self.protocol_z.gripper
-
         # Actual motion value
         self.text_x_pos_num.change_text(self.protocol_z.x_axis_actual_pos)
         self.text_z_pos_num.change_text(self.protocol_z.z_axis_actual_pos)
         self.text_z_spd_num.change_text(self.protocol_z.z_axis_actual_spd)
         self.text_z_acc_num.change_text(self.protocol_z.z_axis_actual_acc)
 
-    #     # Moving Status
+        # Moving Status
         if self.protocol_z.z_axis_moving_status == "Idle":
-            # Hide navi message
-            # self.message_navi.hide()
             # When finish moving
             if self.protocol_z.z_axis_moving_status_before != "Idle":
                 self.handle_finish_moving()
@@ -802,8 +781,6 @@ class App(tk.Tk):
 
                     self.jogging = False
                 self.protocol_z.z_axis_moving_status_before = "Idle"
-                # elif self.protocol_z.y_axis_moving_status_before == "Go Place" or self.protocol_x.x_axis_moving_status_before == "Run":
-                #     self.running = False
 
     def handle_protocol_z(self):
         """
@@ -841,74 +818,13 @@ class App(tk.Tk):
             self.protocol_z.write_heartbeat()
             self.protocol_z.usb_connect_before = False
 
-    # def handle_protocol_x(self):
-    #     """
-    #     This function handles protocol x
-    #     """
-    #     if self.protocol_x.connection:
-    #         if self.time_ms_x >= 100:
-    #             self.time_ms_x = 0
-
-    #             # When start homing
-    #             if self.protocol_y.x_axis_moving_status == "Home":
-    #                 if self.protocol_x.x_axis_moving_status_before == "Idle":
-    #                     self.protocol_x.write_x_axis_moving_status("Home")
-    #             # When start running
-    #             elif self.protocol_y.x_axis_moving_status == "Run":
-    #                 if self.protocol_x.x_axis_moving_status_before == "Idle":
-    #                     self.protocol_y.read_x_axis_target_motion()
-    #                     self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
-    #                     self.protocol_x.write_x_axis_moving_status("Run")
-    #             # When jogging
-    #             elif self.protocol_y.x_axis_moving_status == "Jog Left":
-    #                 if self.protocol_y.x_axis_moving_status_before != "Jog Left":
-    #                     self.protocol_x.write_x_axis_moving_status("Jog Left")
-    #             elif self.protocol_y.x_axis_moving_status == "Jog Right":
-    #                 if self.protocol_y.x_axis_moving_status_before != "Jog Right":
-    #                     self.protocol_x.write_x_axis_moving_status("Jog Right")
-                
-    #             # When stop jogging
-    #             if self.protocol_y.x_axis_moving_status == "Idle":
-    #                 if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
-    #                     self.protocol_x.write_x_axis_moving_status("Idle")
-
-    #             # Read moving status and actual motion all the time
-    #             self.protocol_x.read_holding_registers()
-    #             self.protocol_x.read_x_axis_moving_status()
-    #             self.protocol_x.read_x_axis_actual_motion()
-    #             self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
-
-    #             if self.protocol_x.x_axis_moving_status == "Idle":
-    #                 # When stop homing
-    #                 if self.protocol_x.x_axis_moving_status_before == "Home":
-    #                     self.protocol_y.write_x_axis_moving_status("Idle")
-    #                 # When stop running
-    #                 if self.protocol_x.x_axis_moving_status_before == "Run":
-    #                     self.protocol_y.write_x_axis_moving_status("Idle")
-
-    # def handle_graphic(self):
-    #     """
-    #     This function handles Graphic mode only
-    #     """
-    #     self.handle_connection_change()
-    #     self.handle_ui_change()
-
-    #     self.protocol_z.z_axis_moving_status_before = self.protocol_z.z_axis_moving_status
-        
-    #     if self.protocol_z.z_axis_moving_status == "Home":
-    #         self.keyboard.auto_pilot(0, 0)
-    #     elif self.protocol_z.z_axis_moving_status == "Go Pick":
-    #         self.protocol_z.z_axis_moving_status = "Go Place"
-    #     elif self.protocol_z.z_axis_moving_status == "Go Point":
-    #         self.keyboard.auto_pilot(self.point_target_x, self.point_target_y)
-
     def print_current_activity(self):
         """
         This function prints current activity for debugging in terminal
         """
         if self.running:   print("Running")
         if self.homing:    print("Homing")
-        if self.jogging:   print("jogging Set Shelve")
+        if self.jogging:   print("Jogging Set Shelve")
         if self.vacuum:    print("Vacuum")
 
 if __name__ == "__main__":
