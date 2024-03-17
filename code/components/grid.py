@@ -105,11 +105,41 @@ class Grid():
                 z_value = None
                 dot = None
                 return x_value, z_value, dot
+            
+        elif operation_mode == 'Jog' and position_z != '':
+        # Check if the click event occurs within the grid boundaries
+            if (self.offset_y + 10) <= 705 - int(position_z) <= (self.offset_y + self.row * 10 - 10):
+                position_z = int(position_z)
+                # Do not clear the previous dot to keep all dots on the canvas
+                
+                # Draw a red dot at the intersection of grid lines
+                dot = self.canvas.create_oval(198, 703 - position_z, 202, 707 - position_z, fill="red", outline="red")
+                # Optionally, maintain a list of dots if you need to reference them later
+                if not hasattr(self, 'dots'):
+                    self.dots = []  # Initialize once
+                self.dots.append(dot)  # Add the new dot to the list
+
+                x_value = 0
+                z_value = position_z
+                return x_value, z_value, dot
+            else:
+                x_value = None
+                z_value = None
+                dot = None
+                return x_value, z_value, dot
         else:
             x_value = None
             z_value = None
             dot = None
             return x_value, z_value, dot
+        
+
     
     def delete_point(self, dot):
         self.canvas.delete(dot)
+
+    def delete_all_dots(self):
+        if hasattr(self, 'dots') and self.dots:
+            for dot in self.dots:
+                self.canvas.delete(dot)
+            self.dots.clear()  # Clear the list after deleting all dots

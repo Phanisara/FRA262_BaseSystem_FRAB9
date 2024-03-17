@@ -43,10 +43,12 @@ class PressButton(Button):
 
     def hide(self):
         self.round_rec.hide()
+        self.textbox.hide()
         self.click_area.hide()
 
     def show(self):
         self.round_rec.show()
+        self.textbox.show()
         self.click_area.show()
 
     def activate(self):
