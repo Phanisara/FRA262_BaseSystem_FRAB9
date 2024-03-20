@@ -1,16 +1,21 @@
 # FRA262_BaseSystem_FRAB9
 The base system with user interface for FRA262 (Robotics Studio III) pick & place robot axis Z project.
 
+$~$
+
 ## Installation
 1. Install all fonts that are in `/font` in your computer
 2. Install the libraries by using following command
 ```bash
 cd code && pip install -r requirements.txt
 ```
+$~$
 
 ## Configuration 
 You might need to change COM port same as display in Device Manager within the **`protocol.py`** file.
 > The original COM port is self.port = "COM3"
+
+$~$
 
 ## How to use
 The most basic way to run base system is by running **`main.py`** on the Visual Studio Code.
@@ -21,6 +26,8 @@ The base system has 2 modes for command the robot
 2. **Point mode**
     When using this mode, you have the option to either click on the grid in the left block to set the position of axis Z that you want to go, or you can manually type the position of axis Z in the entry. If you click on the grid, the position X follows the grid range of -10 to 10. However, if you manually type the position of axis Z in the entry, the position X is set to 0.
 
+$~$
+
 ## Testing Method
 1. The system inspector selects the positions of the shelves, setting up 5 shelves.
 2. You click `set shelves` button for starting the jogging.
@@ -30,13 +37,15 @@ The base system has 2 modes for command the robot
     - Example:
         - In case two boxes
             - The system inspector places the boxes on shelves 1 and 4.
-            - The orders of pick and place follow the picture below:
-              ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example2box.png?raw=true)
+            - The orders of pick and place follow the picture below
+            ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example2box.png?raw=true)
         - In case three boxes
             - The system inspector places the boxes on shelves 2, 4, and 5.
-            - The orders of pick and place follow the picture below:
-              ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example3box.png?raw=true)
+            - The orders of pick and place follow the picture below
+            ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example3box.png?raw=true)
 5. After setting up the shelves and placing the boxes, clicks "run" on the UI and check the output of working.
+
+$~$
 
 ## Protocal : Address & Function 
 ### Register Address
@@ -109,9 +118,15 @@ Low Byte
 | 4   | 1 0000         | 16              | Go Point   |
 
 5. **Position / Speed / Acceleration**
+The position, speed, and acceleration sent to the base system should contain only one decimal place. Before sending the values to the Base system, multiply the actual value by 10.(Base_system_Value = Actual_Value * 10)
+> Example: ณf the value of the position you want to send is '123.4', multiply it by 10 to get '1234', and send this value to the address z-axis Actual Position (0x11). This will appear in the Base system as '123.4'.
 
 6. **Pick Order(0x21) , Place Order(0x22)**
+The order of pick and place sent from the Base system to the Z-axis will correspond to the pick and place order displayed in the GUI.
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_readme_example_pick_place.png?raw=true)
+> Example: For the given image, the pick order is '53214', and the place order is '14352'.
 
+$~$
 
 ## Base System Protocol Flow
 1. **Heartbeat**
