@@ -38,11 +38,15 @@ $~$
         - In case two boxes
             - The system inspector places the boxes on shelves 1 and 4.
             - The orders of pick and place follow the picture below
+
             ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example2box.png?raw=true)
+            
         - In case three boxes
             - The system inspector places the boxes on shelves 2, 4, and 5.
             - The orders of pick and place follow the picture below
+
             ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example3box.png?raw=true)
+
 5. After setting up the shelves and placing the boxes, clicks "run" on the UI and check the output of working.
 
 $~$
@@ -123,7 +127,9 @@ The position, speed, and acceleration sent to the base system should contain onl
 
 6. **Pick Order(0x21) , Place Order(0x22)**
 The order of pick and place sent from the Base system to the Z-axis will correspond to the pick and place order displayed in the GUI.
+
 ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example_pick_place.png?raw=true)
+
 > Example: For the given image, the pick order is '53214', and the place order is '14352'.
 
 $~$
