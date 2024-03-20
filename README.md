@@ -123,7 +123,7 @@ Low Byte
 
 5. **Position / Speed / Acceleration**
 The position, speed, and acceleration sent to the base system should contain only one decimal place. Before sending the values to the Base system, multiply the actual value by 10.(Base_system_Value = Actual_Value * 10)
-> Example: ณf the value of the position you want to send is '123.4', multiply it by 10 to get '1234', and send this value to the address z-axis Actual Position (0x11). This will appear in the Base system as '123.4'.
+> Example: If the value of the position you want to send is '123.4', multiply it by 10 to get '1234', and send this value to the address z-axis Actual Position (0x11). This will appear in the Base system as '123.4'.
 
 6. **Pick Order(0x21) , Place Order(0x22)**
 The order of pick and place sent from the Base system to the Z-axis will correspond to the pick and place order displayed in the GUI.
