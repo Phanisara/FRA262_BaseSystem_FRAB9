@@ -554,7 +554,7 @@ class App(tk.Tk):
                     print(self.pick_out,self.place_out)
                     self.protocol_z.write_pick_place_order(self.pick_out,self.place_out)
 
-                    self.protocol_z.write_base_system_status("Run Tray Mode")
+                    self.protocol_z.write_base_system_status("Run Jog Mode")
             elif self.operation_mode == "Point":
                 if self.mode == "Graphic":
                     self.protocol_z.z_axis_moving_status = "Go Point"

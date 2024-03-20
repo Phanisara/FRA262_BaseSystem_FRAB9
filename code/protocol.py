@@ -136,7 +136,7 @@ class Protocol_Z(Binary):
             self.base_system_status_register = 0b0001
         elif command == "Home":
             self.base_system_status_register = 0b0010
-        elif command == "Run Tray Mode":
+        elif command == "Run Jog Mode":
             self.base_system_status_register = 0b0100
         elif command == "Run Point Mode":
             self.base_system_status_register = 0b1000
