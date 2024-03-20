@@ -31,11 +31,11 @@ The base system has 2 modes for command the robot
         - In case two boxes
             - The system inspector places the boxes on shelves 1 and 4.
             - The orders of pick and place follow the picture below:
-              ![alt text](img\readme_example2box.png)
+              ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example2box.png?raw=true)
         - In case three boxes
             - The system inspector places the boxes on shelves 2, 4, and 5.
             - The orders of pick and place follow the picture below:
-              ![alt text](img\readme_example3box.png)
+              ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example3box.png?raw=true)
 5. After setting up the shelves and placing the boxes, clicks "run" on the UI and check the output of working.
 
 ## Protocal : Address & Function 
@@ -71,6 +71,7 @@ Low Byte
 
 ### Data Format
 1. **Base System Status(0x01)**
+
 | Bit | Data in Binary          | Data in Decimal | Meaning         |
 |-----|-------------------------|-----------------|-----------------|
 | 0   | 0000 0000 0000 0001    | 1               | Set Shelves     |
@@ -80,6 +81,7 @@ Low Byte
 > Example: If if you press `Home` button in Base system, it will change data in 2nd bit from 0 to 1 in address Base System Status(0x01).
 
 2. **Vacuum Status(0x02)**
+
 | Bit | Data in Binary                                     | Data in Decimal          | Meaning        |
 |-----|----------------------------------------------------|--------------------------|----------------|
 | 0   | 0000 0000 0000 0000 = Off                          | 0 = Off                  | Vacuum Off     |
@@ -88,6 +90,7 @@ Low Byte
 > Example: If if you press `Toggle On Vaccum` in Base system, it will change data in 1st bit from 0 to 1 in address Vacuum Status(0x02).
 
 3. **Gripper Movement Status(0x03)**
+
 | Bit | Data in Binary                          | Data in Decimal             | Meaning                     |
 |-----|-----------------------------------------|-----------------------------|-----------------------------|
 | 0   | 0000 0000 0000 0000 = Backward         | 0 = Backward                | Movement Backward           |
@@ -96,6 +99,7 @@ Low Byte
 > Example: If if you press `Toggle Forward Movement` in Base system, it will change data in 1st bit from 0 to 1 in address Gripper Movement Status(0x03).
 
 4. **Z-axis Moving Status(0x10)**
+
 | Bit | Data in Binary | Data in Decimal | Meaning    |
 |-----|----------------|-----------------|------------|
 | 0   | 0001           | 1               | Set Shelve |
@@ -111,3 +115,31 @@ Low Byte
 
 ## Base System Protocol Flow
 1. **Heartbeat**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_heartbeat.png?raw=true)
+
+2. **Routine**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_routine.png?raw=true)
+
+3. **Vacuum On/Off**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_vacuum.png?raw=true)
+
+4. **Gripper Movement Forward/Backward**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_gripper.png?raw=true)
+
+5. **Set Shelves**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_set_shelves.png?raw=true)
+
+6. **Set Goal Point**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_set_goal.png?raw=true)
+
+7. **Run Point Mode**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_run_point_mode.png?raw=true)
+
+8. **Set Home**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_set_home.png?raw=true)
+
+9. **Set Pick/Place Order**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_set_pick_place.png?raw=true)
+
+10. **Run Jog Mode**
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_run_jog_mode.png?raw=true)
