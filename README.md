@@ -1,1 +1,113 @@
 # FRA262_BaseSystem_FRAB9
+The base system with user interface for FRA262 (Robotics Studio III) pick & place robot axis Z project.
+
+## Installation
+1. Install all fonts that are in `/font` in your computer
+2. Install the libraries by using following command
+```bash
+cd code && pip install -r requirements.txt
+```
+
+## Configuration 
+You might need to change COM port same as display in Device Manager within the **`protocol.py`** file.
+> The original COM port is self.port = "COM3"
+
+## How to use
+The most basic way to run base system is by running **`main.py`** on the Visual Studio Code.
+
+The base system has 2 modes for command the robot
+1. **Jog mode**
+    When using this mode, first click `set shelves` button and then save the position of the shelves in the station of the base system by setting the bottom shelf to 1, and subsequently number the shelves accordingly up to the top shelf, which is 5. Then, input the order of pick and place for 5 orders, and finally click `Run` button.
+2. **Point mode**
+    When using this mode, you have the option to either click on the grid in the left block to set the position of axis Z that you want to go, or you can manually type the position of axis Z in the entry. If you click on the grid, the position X follows the grid range of -10 to 10. However, if you manually type the position of axis Z in the entry, the position X is set to 0.
+
+## Testing Method
+1. The system inspector selects the positions of the shelves, setting up 5 shelves.
+2. You click `set shelves` button for starting the jogging.
+2. Then, you jog each shelf position and save to the microcontroller. The bottom shelf is set to 1, and subsequent shelves are numbered accordingly up to the top shelf, which is 5.
+3. The system inspector places the box on the shelf (either two or three boxes).
+4. Then, the system inspector will randomly select the order of pick and place based on the boxes that are on the shelves.
+    - Example:
+        - In case two boxes
+            - The system inspector places the boxes on shelves 1 and 4.
+            - The orders of pick and place follow the picture below:
+              ![alt text](img\readme_example2box.png)
+        - In case three boxes
+            - The system inspector places the boxes on shelves 2, 4, and 5.
+            - The orders of pick and place follow the picture below:
+              ![alt text](img\readme_example3box.png)
+5. After setting up the shelves and placing the boxes, clicks "run" on the UI and check the output of working.
+
+## Protocal : Address & Function 
+### Register Address
+| Address | Descriptions              | Operation   |
+| ------- | -------------------------| ----------- |
+| 0x00    | Heartbeat Protocol       | Read/Write  |
+| 0x01    | Base System Status       | Write       |
+| 0x02    | Vacuum Status            | Read/Write  |
+| 0x03    | Movement Status          | Read/Write  |
+| 0x10    | z-axis Moving Status     | Read        |
+| 0x11    | z-axis Actual Position   | Read        |
+| 0x12    | z-axis Actual Speed      | Read        |
+| 0x13    | z-axis Actual Acceleration | Read      |
+| 0x21    | Pick Order               | Write       |
+| 0x22    | Place Order              | Write       |
+| 0x23    | 1st Shelves Postition    | Read        |
+| 0x24    | 2nd Shelves Postition    | Read        |
+| 0x25    | 3rd Shelves Postition    | Read        |
+| 0x26    | 4th Shelves Postition    | Read        |
+| 0x27    | 5th Shelves Postition    | Read        |
+| 0x30    | Goal Point z             | Write       |
+| 0x40    | x-axis Actual Position   | Read/Write  |
+
+### Bit Postition
+High Byte
+| 15 | 14 | 13 | 12 | 11 | 10 | 9 | 8 |
+| -- | -- | -- | -- | -- | -- | -- | -- |
+
+Low Byte
+| 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+| -- | -- | -- | -- | -- | -- | -- | -- |
+
+### Data Format
+1. **Base System Status(0x01)**
+| Bit | Data in Binary          | Data in Decimal | Meaning         |
+|-----|-------------------------|-----------------|-----------------|
+| 0   | 0000 0000 0000 0001    | 1               | Set Shelves     |
+| 1   | 0000 0000 0000 0010    | 2               | Home            |
+| 2   | 0000 0000 0000 0100    | 4               | Run Jog Mode    |
+| 3   | 0000 0000 0000 1000    | 8               | Run Point Mode  |
+> Example: If if you press `Home` button in Base system, it will change data in 2nd bit from 0 to 1 in address Base System Status(0x01).
+
+2. **Vacuum Status(0x02)**
+| Bit | Data in Binary                                     | Data in Decimal          | Meaning        |
+|-----|----------------------------------------------------|--------------------------|----------------|
+| 0   | 0000 0000 0000 0000 = Off                          | 0 = Off                  | Vacuum Off     |
+| 0   | 0000 0000 0000 0001 = On                           | 1 = On                   | Vacuum On      |
+
+> Example: If if you press `Toggle On Vaccum` in Base system, it will change data in 1st bit from 0 to 1 in address Vacuum Status(0x02).
+
+3. **Gripper Movement Status(0x03)**
+| Bit | Data in Binary                          | Data in Decimal             | Meaning                     |
+|-----|-----------------------------------------|-----------------------------|-----------------------------|
+| 0   | 0000 0000 0000 0000 = Backward         | 0 = Backward                | Movement Backward           |
+| 0   | 0000 0000 0000 0001 = Forward          | 1 = Forward                 | Movement Forward            |
+
+> Example: If if you press `Toggle Forward Movement` in Base system, it will change data in 1st bit from 0 to 1 in address Gripper Movement Status(0x03).
+
+4. **Z-axis Moving Status(0x10)**
+| Bit | Data in Binary | Data in Decimal | Meaning    |
+|-----|----------------|-----------------|------------|
+| 0   | 0001           | 1               | Set Shelve |
+| 1   | 0010           | 2               | Home       |
+| 2   | 0100           | 4               | Go Pick    |
+| 3   | 1000           | 8               | Go Place   |
+| 4   | 1 0000         | 16              | Go Point   |
+
+5. **Position / Speed / Acceleration**
+
+6. **Pick Order(0x21) , Place Order(0x22)**
+
+
+## Base System Protocol Flow
+1. **Heartbeat**
