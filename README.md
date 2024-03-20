@@ -123,7 +123,7 @@ The position, speed, and acceleration sent to the base system should contain onl
 
 6. **Pick Order(0x21) , Place Order(0x22)**
 The order of pick and place sent from the Base system to the Z-axis will correspond to the pick and place order displayed in the GUI.
-![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_readme_example_pick_place.png?raw=true)
+![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example_pick_place.png?raw=true)
 > Example: For the given image, the pick order is '53214', and the place order is '14352'.
 
 $~$
