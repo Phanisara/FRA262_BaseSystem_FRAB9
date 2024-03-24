@@ -111,7 +111,15 @@ Low Byte
 
 > Example: If if you press `Toggle Forward Movement` in Base system, it will change data in 1st bit from 0 to 1 in address Gripper Movement Status(0x03).
 
-4. **Z-axis Moving Status(0x10)**
+4. **Gripper Movement Actual Status (0x04)**
+| Bit | Data in Binary                                                   | Data in Decimal | Meaning                |
+|-----|-------------------------------------------------------------------|-----------------|------------------------|
+| 0   | 0000 0000 0000 0000 = Lead Switch 1 Off, 0000 0000 0000 0001 = Lead Switch 1 On | 0 = Off, 1 = On  | Lead Switch 1 Status  |
+| 1   | 0000 0000 0000 0000 = Lead Switch 2 Off, 0000 0000 0000 0010 = Lead Switch 2 On | 0 = Off, 2 = On  | Lead Switch 2 Status  |
+> Example: If value is written '0b0001' in Gripper Movement Actual Status (0x04), the base system will show lead switch 1: on and lead switch 1: off.
+>          If value is written '0b0010' in Gripper Movement Actual Status (0x04), the base system will show lead switch 1: off and lead switch 1: on.
+
+5. **Z-axis Moving Status(0x10)**
 
 | Bit | Data in Binary | Data in Decimal | Meaning    |
 |-----|----------------|-----------------|------------|
@@ -121,11 +129,11 @@ Low Byte
 | 3   | 1000           | 8               | Go Place   |
 | 4   | 1 0000         | 16              | Go Point   |
 
-5. **Position / Speed / Acceleration**
+6. **Position / Speed / Acceleration**
 The position, speed, and acceleration sent to the base system should contain only one decimal place. Before sending the values to the Base system, multiply the actual value by 10.(Base_system_Value = Actual_Value * 10)
 > Example: If the value of the position you want to send is '123.4', multiply it by 10 to get '1234', and send this value to the address z-axis Actual Position (0x11). This will appear in the Base system as '123.4'.
 
-6. **Pick Order(0x21) , Place Order(0x22)**
+7. **Pick Order(0x21) , Place Order(0x22)**
 The order of pick and place sent from the Base system to the Z-axis will correspond to the pick and place order displayed in the GUI.
 
 ![alt text](https://github.com/Phanisara/FRA262_BaseSystem_FRAB9/blob/main/img/readme_example_pick_place.png?raw=true)
