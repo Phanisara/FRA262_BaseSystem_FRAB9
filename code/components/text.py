@@ -31,8 +31,11 @@ class TextBox():
     def show(self):
         self.canvas.itemconfigure(self.textbox, state='normal')
 
-    def change_text(self, text):
-        self.canvas.itemconfigure(self.textbox, text=text)
+    def change_text(self, text, color=None):
+        if color:
+            self.canvas.itemconfigure(self.textbox, text=text, fill=color)
+        else:
+            self.canvas.itemconfigure(self.textbox, text=text)
         self.text = text
 
     def move_to(self, x, y):
