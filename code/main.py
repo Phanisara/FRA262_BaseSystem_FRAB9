@@ -83,7 +83,7 @@ class App(tk.Tk):
         """
         # Define font size of each os
         if self.os == "M": # Mac
-            font_size_title = 14
+            font_size_title = 12
             font_size_subtitle = 11
             font_size_detail = 9
             font_size_grid = 9
@@ -94,7 +94,7 @@ class App(tk.Tk):
             font_size_button_run = 17
             font_size_message_error = 7
         elif self.os == "W": # Windows
-            font_size_title = 14
+            font_size_title = 12
             font_size_subtitle = 11
             font_size_detail = 9
             font_size_grid = 9
@@ -109,7 +109,7 @@ class App(tk.Tk):
         self.canvas_field = tk.Canvas(master=self, width=740, height=780, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_field.pack(side="top")
         self.background_field_table = RoundRectangle(canvas=self.canvas_field, x=40, y=30, w=320, h=720, r=10, color=Color.whitegray)
-        self.background_field_detail = RoundRectangle(canvas=self.canvas_field, x=380, y=110, w=320, h=640, r=10, color=Color.whitegray)
+        self.background_field_detail = RoundRectangle(canvas=self.canvas_field, x=380, y=80, w=320, h=670, r=10, color=Color.whitegray)
 
         # --------------------------------- Group of Grid ---------------------------------
         self.grid = Grid(canvas=self.canvas_field, offset_x=90, offset_y=85, row=63, column=22, color_grid=Color.lightgray , color_highlight=Color.gray)
@@ -132,38 +132,44 @@ class App(tk.Tk):
 
         # ------------------------- Group of all detail and button- ------------------------
         # ------------------------------------- logo ---------------------------------------
-        self.text_title = TextBox(canvas=self.canvas_field, x=573, y=55, text="ROBOTICS STUDIO III", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
-        self.text_subtitle = TextBox(canvas=self.canvas_field, x=572, y=85, text="BASE SYSTEM", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
-        self.photo_logo = Photo(canvas=self.canvas_field, file_name="img\logo.png", x=433, y=70, size_x=52, size_y=52)
+        self.text_title = TextBox(canvas=self.canvas_field, x=573, y=35, text="ROBOTICS STUDIO III", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
+        self.text_subtitle = TextBox(canvas=self.canvas_field, x=572, y=55, text="BASE SYSTEM", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
+        self.photo_logo = Photo(canvas=self.canvas_field, file_name="../img/logo.png", x=433, y=50, size_x=42, size_y=42)
 
         # ---------------------------------- Group detail ----------------------------------
-        self.text_detail = TextBox(canvas=self.canvas_field, x=540, y=140, text="Detail", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
-        self.text_x_pos = TextBox(canvas=self.canvas_field, x=410, y=165, text="x-Axis Position", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_pos = TextBox(canvas=self.canvas_field, x=410, y=190, text="z-Axis Position", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_spd = TextBox(canvas=self.canvas_field, x=410, y=215, text="z-Axis Speed", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_acc = TextBox(canvas=self.canvas_field, x=410, y=240, text="z-Axis Acceleration", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_x_pos_unit = TextBox(canvas=self.canvas_field, x=630, y=165, text="mm", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_pos_unit = TextBox(canvas=self.canvas_field, x=630, y=190, text="mm", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_spd_unit = TextBox(canvas=self.canvas_field, x=630, y=215, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_acc_unit = TextBox(canvas=self.canvas_field, x=630, y=240, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_acc_2= TextBox(canvas=self.canvas_field, x=660, y=235, text="2", font_name="Inter-Regular", font_size=5, color=Color.darkgray, anchor="w")
-        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=570, y=165,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_z_pos_num = TextBox(canvas=self.canvas_field, x=570, y=190,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_z_spd_num = TextBox(canvas=self.canvas_field, x=570, y=215,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_z_acc_num = TextBox(canvas=self.canvas_field, x=570, y=240,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.line_seperate_1 = Line(canvas=self.canvas_field, point_1=(400, 270), point_2=(680, 270), width=1, color=Color.lightgray)
+        self.text_detail = TextBox(canvas=self.canvas_field, x=540, y=110, text="Detail", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
+        self.text_x_pos = TextBox(canvas=self.canvas_field, x=410, y=135, text="x-Axis Position", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_pos = TextBox(canvas=self.canvas_field, x=410, y=160, text="z-Axis Position", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_spd = TextBox(canvas=self.canvas_field, x=410, y=185, text="z-Axis Speed", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_acc = TextBox(canvas=self.canvas_field, x=410, y=210, text="z-Axis Acceleration", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_x_pos_unit = TextBox(canvas=self.canvas_field, x=630, y=135, text="mm", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_pos_unit = TextBox(canvas=self.canvas_field, x=630, y=160, text="mm", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_spd_unit = TextBox(canvas=self.canvas_field, x=630, y=185, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_acc_unit = TextBox(canvas=self.canvas_field, x=630, y=210, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_acc_2= TextBox(canvas=self.canvas_field, x=660, y=205, text="2", font_name="Inter-Regular", font_size=5, color=Color.darkgray, anchor="w")
+        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=570, y=135,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_pos_num = TextBox(canvas=self.canvas_field, x=570, y=160,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_spd_num = TextBox(canvas=self.canvas_field, x=570, y=185,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_acc_num = TextBox(canvas=self.canvas_field, x=570, y=210,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.line_seperate_1 = Line(canvas=self.canvas_field, point_1=(400, 240), point_2=(680, 240), width=1, color=Color.lightgray)
 
         # ---------------------------------- Group gripper ----------------------------------
         self.vacuum = False
-        self.text_gripper = TextBox(canvas=self.canvas_field, x=540, y=300, text="Gripper", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
-        self.text_vacuum = TextBox(canvas=self.canvas_field, x=450, y=330, text="Vacuum", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
-        self.toggle_vacuum   = ToggleButton(canvas=self.canvas_field, x=415, y=350, w=40, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="ON", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="OFF", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
+        self.text_gripper = TextBox(canvas=self.canvas_field, x=540, y=270, text="Gripper", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
+        self.text_vacuum = TextBox(canvas=self.canvas_field, x=450, y=295, text="Vacuum", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.toggle_vacuum   = ToggleButton(canvas=self.canvas_field, x=415, y=315, w=40, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="ON", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="OFF", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
         
-        self.line_gripper = Line(canvas=self.canvas_field, point_1=(520, 325), point_2=(520, 380), width=1, color=Color.lightgray)
+        self.line_gripper = Line(canvas=self.canvas_field, point_1=(520, 290), point_2=(520, 345), width=1, color=Color.lightgray)
 
         self.gripping = False
-        self.text_movement = TextBox(canvas=self.canvas_field, x=610, y=330, text="Movement", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
-        self.toggle_movement   = ToggleButton(canvas=self.canvas_field, x=545, y=350, w=40, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="FORWARD", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="BACKWARD", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
+        self.text_movement = TextBox(canvas=self.canvas_field, x=610, y=295, text="Movement", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.toggle_movement   = ToggleButton(canvas=self.canvas_field, x=545, y=315, w=40, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="FORWARD", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="BACKWARD", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
+        
+        self.text_lead_switch_1 = TextBox(canvas=self.canvas_field, x=450, y=363, text="Lead Switch 1: ", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.text_lead_switch_2 = TextBox(canvas=self.canvas_field, x=590, y=363, text="Lead Switch 2: ", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.status_lead_switch_1 = TextBox(canvas=self.canvas_field, x=500, y=363,  text="OFF", font_name="Inter-Medium", font_size=font_size_detail, color=Color.gray, anchor="w")
+        self.status_lead_switch_2 = TextBox(canvas=self.canvas_field, x=640, y=363,  text="OFF", font_name="Inter-Medium", font_size=font_size_detail, color=Color.gray, anchor="w")
+
         self.line_seperate_2 = Line(canvas=self.canvas_field, point_1=(400, 387.5), point_2=(680, 387.5), width=1, color=Color.lightgray)
 
         # ---------------------------------- Group operation ----------------------------------
@@ -171,7 +177,7 @@ class App(tk.Tk):
         self.text_operation = TextBox(canvas=self.canvas_field, x=540, y=412.5, text="Operation", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
         self.line_seperate_2 = Line(canvas=self.canvas_field, point_1=(400, 594.5), point_2=(680, 594.5), width=1, color=Color.lightgray)
 
-            # ------------------------- Jog Mode -------------------------
+        # ------------------------- Jog Mode -------------------------
         self.jogging = False
         self.radio_jog  = RadioButton(canvas=self.canvas_field, x=440, y=437.5, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Jog Mode  ", font_name="Inter-Regular", text_size=font_size_button_small, on_default=True)
         self.press_set_shelves = PressButton(canvas=self.canvas_field, x=465, y=467, w=150, h=20, r=10, active_color=Color.gray, inactive_color=Color.lightgray, text="Set shelves", font_name="Inter-SemiBold", text_size=font_size_detail, active_default=True)
