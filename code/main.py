@@ -16,11 +16,6 @@ from protocol import Protocol_Z
 
 # ----------------------------------- Config this variable before using ----------------------------------- 
 logo_path = "../img/logo.png"
-
-device_port = "COM3"
-# example: for os -> device_port = "/dev/cu.usbmodem14103"
-#          for window -> device_port = "COM3"
-
 # ---------------------------------------------------------------------------------------------------------
 
 class App(tk.Tk):

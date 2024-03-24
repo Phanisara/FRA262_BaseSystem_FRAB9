@@ -2,7 +2,12 @@ import platform
 import struct
 from pymodbus.client import ModbusSerialClient as ModbusClient
 from pymodbus.client import ModbusTcpClient
-import main
+
+# ----------------------------------- Config this variable before using ----------------------------------- 
+device_port = "COM3"
+# example: for os -> device_port = "/dev/cu.usbmodem14103"
+#          for window -> device_port = "COM3"
+# ---------------------------------------------------------------------------------------------------------
 
 class Binary():
     """
@@ -59,9 +64,9 @@ class Protocol_Z(Binary):
     def __init__(self):
         self.os = platform.platform()[0].upper()
         if self.os == 'M': #Mac
-            self.port = main.device_port
+            self.port = device_port
         elif self.os == 'W': #Windows        
-            self.port = main.device_port
+            self.port = device_port
 
         self.usb_connect = False
         self.usb_connect_before = False
