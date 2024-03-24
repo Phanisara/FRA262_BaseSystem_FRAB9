@@ -1,5 +1,4 @@
-# tk
-# platform
+tk
 keyboard
 pymodbus==3.3.0
 pyserial
