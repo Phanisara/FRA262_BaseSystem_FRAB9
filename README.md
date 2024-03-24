@@ -12,17 +12,8 @@ cd code && pip install -r requirements.txt
 $~$
 
 ## Configuration 
-You might need to change COM port same as display in Device Manager and change the path of the logo file (**`/img/logo.png`**) to match the file path on your own computer within the **`main.py`** file .
-   ```bash
-    # ----------------------------------- Config this variable before using ----------------------------------- 
-    logo_path = "../img/logo.png"
-
-    device_port = "COM3"
-    # example: for os -> device_port = "/dev/cu.usbmodem14103"
-    #          for window -> device_port = "COM3"
-
-    # ---------------------------------------------------------------------------------------------------------
-   ```
+1. You might need to change **`device_port`** same as display in Device Manager the **`protocal.py`** file.
+2. You might need to change **`logo_path`** (the path of logo image that is in **`/img/logo.png`**) to match the file path on your own computer within the **`main.py`** file.
 
 $~$
 
