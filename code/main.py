@@ -14,6 +14,15 @@ from components.photo import Photo
 from components.entry import Entry, OrderEntry
 from protocol import Protocol_Z
 
+# ----------------------------------- Config this variable before using ----------------------------------- 
+logo_path = "../img/logo.png"
+
+device_port = "COM3"
+# example: for os -> device_port = "/dev/cu.usbmodem14103"
+#          for window -> device_port = "COM3"
+
+# ---------------------------------------------------------------------------------------------------------
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -134,7 +143,7 @@ class App(tk.Tk):
         # ------------------------------------- logo ---------------------------------------
         self.text_title = TextBox(canvas=self.canvas_field, x=573, y=35, text="ROBOTICS STUDIO III", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
         self.text_subtitle = TextBox(canvas=self.canvas_field, x=572, y=55, text="BASE SYSTEM", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
-        self.photo_logo = Photo(canvas=self.canvas_field, file_name="../img/logo.png", x=433, y=50, size_x=42, size_y=42)
+        self.photo_logo = Photo(canvas=self.canvas_field, file_name=logo_path, x=433, y=50, size_x=42, size_y=42)
 
         # ---------------------------------- Group detail ----------------------------------
         self.text_detail = TextBox(canvas=self.canvas_field, x=540, y=110, text="Detail", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
