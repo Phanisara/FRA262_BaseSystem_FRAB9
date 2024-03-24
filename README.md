@@ -112,6 +112,7 @@ Low Byte
 > Example: If if you press `Toggle Forward Movement` in Base system, it will change data in 1st bit from 0 to 1 in address Gripper Movement Status(0x03).
 
 4. **Gripper Movement Actual Status (0x04)**
+
 | Bit | Data in Binary                                                   | Data in Decimal | Meaning                |
 |-----|-------------------------------------------------------------------|-----------------|------------------------|
 | 0   | 0000 0000 0000 0000 = Lead Switch 1 Off, 0000 0000 0000 0001 = Lead Switch 1 On | 0 = Off, 1 = On  | Lead Switch 1 Status  |
