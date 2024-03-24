@@ -754,7 +754,19 @@ class App(tk.Tk):
     def handle_ui_change(self):
         """
         This function handles updating UI (according to protocol status) 
-        """
+        """ 
+        
+        # Actual Gripper 
+        if self.protocol_z.gripper_actual_lead1 == "1":  
+            self.status_lead_switch_1.change_text("ON", color=Color.blue)
+        else:
+            self.status_lead_switch_1.change_text("OFF", color=Color.gray)
+
+        if self.protocol_z.gripper_actual_lead2 == "1":
+            self.status_lead_switch_2.change_text("ON", color=Color.blue)
+        else:
+            self.status_lead_switch_2.change_text("OFF", color=Color.gray)
+            
         # Actual motion value
         self.text_x_pos_num.change_text(self.protocol_z.x_axis_actual_pos)
         self.text_z_pos_num.change_text(self.protocol_z.z_axis_actual_pos)

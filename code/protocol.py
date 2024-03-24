@@ -78,6 +78,8 @@ class Protocol_Z(Binary):
 
         self.vacuum = "0"
         self.gripper = "0"
+        self.gripper_actual_lead1 = "0"
+        self.gripper_actual_lead2 = "0"
 
         self.z_axis_moving_status_before = "Idle"
         self.z_axis_moving_status = "Idle"
@@ -115,6 +117,10 @@ class Protocol_Z(Binary):
             self.read_x_axis_actual_motion()
             print("Vacuum:", self.vacuum)
             print("Gripper:", self.gripper)
+
+            print("Gripper_actual_lead1:", self.gripper_actual_lead1)
+            print("Gripper_actual_lead2:", self.gripper_actual_lead2)
+
             print("Pos:", self.z_axis_actual_pos, "\tSpd:", self.z_axis_actual_spd, "\tAcc:", self.z_axis_actual_acc)
             print("Z-Axis Moving Status:", self.z_axis_moving_status)
             self.routine_normal = True
@@ -152,8 +158,14 @@ class Protocol_Z(Binary):
     def read_end_effector_status(self):
         vacuum_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x02]))[::-1]
         gripper_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x03]))[::-1]
+
+        gripper_actual_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x04]))[::-1]
+
         self.vacuum = vacuum_status_binary[0]
         self.gripper = gripper_status_binary[0]
+
+        self.gripper_actual_lead1 = gripper_actual_status_binary[1]
+        self.gripper_actual_lead2 = gripper_actual_status_binary[0]
 
     def write_vaccuum_status(self, command):
         if command == "Vacuum On":
