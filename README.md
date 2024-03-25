@@ -12,8 +12,7 @@ cd code && pip install -r requirements.txt
 $~$
 
 ## Configuration 
-1. You might need to change **`device_port`** same as display in Device Manager the **`protocal.py`** file.
-2. You might need to change **`logo_path`** (the path of logo image that is in **`/img/logo.png`**) to match the file path on your own computer within the **`main.py`** file.
+You might need to change **`device_port`** same as display in Device Manager the **`protocal.py`** file.
 
 $~$
 
