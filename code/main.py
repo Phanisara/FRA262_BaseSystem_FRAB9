@@ -239,7 +239,13 @@ class App(tk.Tk):
         self.first_out_entry_flag = False
         self.first_point_entry_flag = False
         self.grid_flag = False
-
+        self.dot_shelve_1 = None
+        self.dot_shelve_2 = None
+        self.dot_shelve_3 = None
+        self.dot_shelve_4 = None
+        self.dot_shelve_5 = None
+        self.finish_flag = 2
+        self.press_run_flag = False
         
         self.bind("<Return>", self.out_entry)
         self.canvas_field.bind("<Button-1>", self.handle_press_home)
@@ -563,7 +569,6 @@ class App(tk.Tk):
                     self.place_out = int(f"{self.order_place_1}{self.order_place_2}{self.order_place_3}{self.order_place_4}{self.order_place_5}")
                     print(self.pick_out,self.place_out)
                     self.protocol_z.write_pick_place_order(self.pick_out,self.place_out)
-
                     self.protocol_z.write_base_system_status("Run Jog Mode")
             elif self.operation_mode == "Point":
                 if self.mode == "Graphic":
@@ -595,6 +600,7 @@ class App(tk.Tk):
             self.press_run.deactivate()
             self.press_home.deactivate()
             self.press_run.pressed = False
+            self.press_run_flag = True
 
     def handle_press_set_shelves(self):
         """
@@ -669,9 +675,9 @@ class App(tk.Tk):
         self.text_z_entry.enable()  
         self.press_set_shelves.activate()
         self.press_run.activate()
-        self.press_home.activate()
         self.press_run.activate()
         self.press_home.activate()
+        self.press_run_flag = False
 
     def handle_connection_change(self):
         """
@@ -777,7 +783,14 @@ class App(tk.Tk):
         if self.protocol_z.z_axis_moving_status == "Idle":
             # When finish moving
             if self.protocol_z.z_axis_moving_status_before != "Idle":
-                self.handle_finish_moving()
+
+                if (self.finish_flag == 0 or self.operation_mode == 'Point') and self.press_run_flag:
+                    self.handle_finish_moving()
+                    self.grid.delete_point(self.dot_point)
+                    self.grid.delete_all_dots()
+                    self.text_z_entry.set_text("0")
+                    self.finish_flag = 1
+
                 if self.protocol_z.z_axis_moving_status_before == "Go Point":
                     self.running = False
                 elif self.protocol_z.z_axis_moving_status_before == "Home":
@@ -787,19 +800,27 @@ class App(tk.Tk):
                 elif self.protocol_z.z_axis_moving_status_before == "Go Place":
                     self.homing = False
                 elif self.protocol_z.z_axis_moving_status_before == "Set Shelves":
-                    if self.mode == "Protocol":
+                    if self.mode == "Protocol" and self.operation_mode == "Jog" and self.finish_flag != 1:
                         self.protocol_z.read_Shelve_position()
-
-                    self.target_z = self.protocol_z.shelve_1
-                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
-                    self.target_z = self.protocol_z.shelve_2
-                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
-                    self.target_z = self.protocol_z.shelve_3
-                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
-                    self.target_z = self.protocol_z.shelve_4
-                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
-                    self.target_z = self.protocol_z.shelve_5
-                    self.target_x, self.target_z, self.dot = self.grid.show_point(self.target_z, self.operation_mode)
+                        self.finish_flag = 0
+                        self.handle_finish_moving()
+                        self.press_home.deactivate()
+                        self.target_z_1 = self.protocol_z.shelve_1
+                        self.target_x, self.target_z_1, self.dot_shelve_1 = self.grid.show_point(int(self.target_z_1), self.operation_mode)
+                        
+                        self.target_z_2 = self.protocol_z.shelve_2
+                        self.target_x, self.target_z_2, self.dot_shelve_2 = self.grid.show_point(int(self.target_z_2), self.operation_mode)
+                        
+                        self.target_z_3 = self.protocol_z.shelve_3
+                        self.target_x, self.target_z_3, self.dot_shelve_3 = self.grid.show_point(int(self.target_z_3), self.operation_mode)
+                        
+                        self.target_z_4 = self.protocol_z.shelve_4
+                        self.target_x, self.target_z_4, self.dot_shelve_4 = self.grid.show_point(int(self.target_z_4), self.operation_mode)
+                        
+                        self.target_z_5 = self.protocol_z.shelve_5
+                        self.target_x, self.target_z_5, self.dot_shelve_5 = self.grid.show_point(int(self.target_z_5), self.operation_mode)
+                    elif self.finish_flag == 1:
+                        self.finish_flag = 2                       
 
                     self.jogging = False
                 self.protocol_z.z_axis_moving_status_before = "Idle"
