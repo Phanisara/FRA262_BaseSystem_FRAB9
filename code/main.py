@@ -20,8 +20,8 @@ class App(tk.Tk):
         # Title
         self.title('Base System')
         # Mode
-        self.mode = "Graphic"
-        # self.mode = "Protocol"
+        # self.mode = "Graphic"
+        self.mode = "Protocol"
         # Define os
         self.os = platform.platform()[0].upper()
         # Window Dimension
