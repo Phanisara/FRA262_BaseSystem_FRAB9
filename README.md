@@ -59,6 +59,7 @@ $~$
 | 0x01    | Base System Status       | Write       |
 | 0x02    | Vacuum Status            | Read/Write  |
 | 0x03    | Movement Status          | Read/Write  |
+| 0x04	  | Movement Actual Status 	 | Read
 | 0x10    | z-axis Moving Status     | Read        |
 | 0x11    | z-axis Actual Position   | Read        |
 | 0x12    | z-axis Actual Speed      | Read        |
@@ -115,10 +116,11 @@ Low Byte
 
 | Bit | Data in Binary                                                   | Data in Decimal | Meaning                |
 |-----|-------------------------------------------------------------------|-----------------|------------------------|
-| 0   | 0000 0000 0000 0000 = Lead Switch 1 Off, 0000 0000 0000 0001 = Lead Switch 1 On | 0 = Off, 1 = On  | Lead Switch 1 Status  |
-| 1   | 0000 0000 0000 0000 = Lead Switch 2 Off, 0000 0000 0000 0010 = Lead Switch 2 On | 0 = Off, 2 = On  | Lead Switch 2 Status  |
-> Example: If value is written '0b0001' in Gripper Movement Actual Status (0x04), the base system will show lead switch 1: on and lead switch 1: off.
->          If value is written '0b0010' in Gripper Movement Actual Status (0x04), the base system will show lead switch 1: off and lead switch 1: on.
+| 0   | 0000 0000 0000 0000 = Lead Switch 2 Off, 0000 0000 0000 0001 = Lead Switch 2 On | 0 = Off, 1 = On  | Lead Switch 2 Status  |
+| 1   | 0000 0000 0000 0000 = Lead Switch 1 Off, 0000 0000 0000 0010 = Lead Switch 1 On | 0 = Off, 2 = On  | Lead Switch 1 Status  |
+In the cylinders of the gripper their will be 2 lead switch to providing feedback about the position of the piston within the cylinders for showing the forward/backward status of the gripper and that feedback movement need to show at the Base system.
+> Example: If value is written '0b0001' in Gripper Movement Actual Status (0x04), the base system will show lead switch 1: off and lead switch 1: on.
+>          If value is written '0b0010' in Gripper Movement Actual Status (0x04), the base system will show lead switch 1: on and lead switch 1: off.
 
 5. **Z-axis Moving Status(0x10)**
 
