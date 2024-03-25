@@ -18,8 +18,10 @@ $~$
 $~$
 
 ## How to use
-The most basic way to run base system is by running **`main.py`** on the Visual Studio Code.
-
+The most basic way to run base system is by running **main.py`** on the Visual Studio Code.
+```bash
+cd code && python main.py
+```
 The base system has 2 modes for command the robot
 1. **Jog mode**
     When using this mode, first click `set shelves` button and then save the position of the shelves in the station of the base system by setting the bottom shelf to 1, and subsequently number the shelves accordingly up to the top shelf, which is 5. Then, input the order of pick and place for 5 orders, and finally click `Run` button.
