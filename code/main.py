@@ -14,18 +14,14 @@ from components.photo import Photo
 from components.entry import Entry, OrderEntry
 from protocol import Protocol_Z
 
-# ----------------------------------- Config this variable before using ----------------------------------- 
-logo_path = "../img/logo.png"
-# ---------------------------------------------------------------------------------------------------------
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
         # Title
         self.title('Base System')
         # Mode
-        # self.mode = "Graphic"
-        self.mode = "Protocol"
+        self.mode = "Graphic"
+        # self.mode = "Protocol"
         # Define os
         self.os = platform.platform()[0].upper()
         # Window Dimension
@@ -113,7 +109,7 @@ class App(tk.Tk):
         self.canvas_field = tk.Canvas(master=self, width=740, height=780, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_field.pack(side="top")
         self.background_field_table = RoundRectangle(canvas=self.canvas_field, x=40, y=30, w=320, h=720, r=10, color=Color.whitegray)
-        self.background_field_detail = RoundRectangle(canvas=self.canvas_field, x=380, y=80, w=320, h=670, r=10, color=Color.whitegray)
+        self.background_field_detail = RoundRectangle(canvas=self.canvas_field, x=380, y=70, w=320, h=680, r=10, color=Color.whitegray)
 
         # --------------------------------- Group of Grid ---------------------------------
         self.grid = Grid(canvas=self.canvas_field, offset_x=90, offset_y=85, row=63, column=22, color_grid=Color.lightgray , color_highlight=Color.gray)
@@ -136,26 +132,26 @@ class App(tk.Tk):
 
         # ------------------------- Group of all detail and button- ------------------------
         # ------------------------------------- logo ---------------------------------------
-        self.text_title = TextBox(canvas=self.canvas_field, x=573, y=35, text="ROBOTICS STUDIO III", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
-        self.text_subtitle = TextBox(canvas=self.canvas_field, x=572, y=55, text="BASE SYSTEM", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
-        self.photo_logo = Photo(canvas=self.canvas_field, file_name=logo_path, x=433, y=50, size_x=42, size_y=42)
+        self.text_title = TextBox(canvas=self.canvas_field, x=540, y=45, text="ROBOTICS STUDIO III : BASE SYSTEM", font_name="Inter-Bold", font_size=font_size_title, color=Color.whitegray, anchor="center")
 
         # ---------------------------------- Group detail ----------------------------------
-        self.text_detail = TextBox(canvas=self.canvas_field, x=540, y=110, text="Detail", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
-        self.text_x_pos = TextBox(canvas=self.canvas_field, x=410, y=135, text="x-Axis Position", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_pos = TextBox(canvas=self.canvas_field, x=410, y=160, text="z-Axis Position", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_spd = TextBox(canvas=self.canvas_field, x=410, y=185, text="z-Axis Speed", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_acc = TextBox(canvas=self.canvas_field, x=410, y=210, text="z-Axis Acceleration", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_x_pos_unit = TextBox(canvas=self.canvas_field, x=630, y=135, text="mm", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_pos_unit = TextBox(canvas=self.canvas_field, x=630, y=160, text="mm", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_spd_unit = TextBox(canvas=self.canvas_field, x=630, y=185, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_acc_unit = TextBox(canvas=self.canvas_field, x=630, y=210, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
-        self.text_z_acc_2= TextBox(canvas=self.canvas_field, x=660, y=205, text="2", font_name="Inter-Regular", font_size=5, color=Color.darkgray, anchor="w")
-        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=570, y=135,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_z_pos_num = TextBox(canvas=self.canvas_field, x=570, y=160,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_z_spd_num = TextBox(canvas=self.canvas_field, x=570, y=185,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.text_z_acc_num = TextBox(canvas=self.canvas_field, x=570, y=210,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
-        self.line_seperate_1 = Line(canvas=self.canvas_field, point_1=(400, 240), point_2=(680, 240), width=1, color=Color.lightgray)
+        self.text_detail = TextBox(canvas=self.canvas_field, x=540, y=100, text="Detail", font_name="Inter-SemiBold", font_size=font_size_subtitle, color=Color.darkgray, anchor="center")
+        self.text_x_pos = TextBox(canvas=self.canvas_field, x=410, y=125, text="x-Axis Position", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_pos = TextBox(canvas=self.canvas_field, x=410, y=150, text="z-Axis Position", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_spd = TextBox(canvas=self.canvas_field, x=410, y=175, text="z-Axis Speed", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_acc = TextBox(canvas=self.canvas_field, x=410, y=200, text="z-Axis Acceleration", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_status = TextBox(canvas=self.canvas_field, x=410, y=225, text="z-Axis Status", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_x_pos_unit = TextBox(canvas=self.canvas_field, x=630, y=125, text="mm", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_pos_unit = TextBox(canvas=self.canvas_field, x=630, y=150, text="mm", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_spd_unit = TextBox(canvas=self.canvas_field, x=630, y=175, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_acc_unit = TextBox(canvas=self.canvas_field, x=630, y=200, text="mm/s", font_name="Inter-Regular", font_size=font_size_detail, color=Color.darkgray, anchor="w")
+        self.text_z_acc_2= TextBox(canvas=self.canvas_field, x=660, y=195, text="2", font_name="Inter-Regular", font_size=5, color=Color.darkgray, anchor="w")
+        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=570, y=125,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_pos_num = TextBox(canvas=self.canvas_field, x=570, y=150,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_spd_num = TextBox(canvas=self.canvas_field, x=570, y=175,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_acc_num = TextBox(canvas=self.canvas_field, x=570, y=200,  text="0.0", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.text_z_status_value = TextBox(canvas=self.canvas_field, x=570, y=225,  text="Idle", font_name="Inter-Medium", font_size=font_size_detail, color=Color.blue, anchor="w")
+        self.line_seperate_1 = Line(canvas=self.canvas_field, point_1=(400, 250), point_2=(680, 250), width=1, color=Color.lightgray)
 
         # ---------------------------------- Group gripper ----------------------------------
         self.vacuum = False
@@ -704,6 +700,7 @@ class App(tk.Tk):
         self.text_z_pos_num.deactivate(self.text_z_pos_num.text, Color.lightgray)
         self.text_z_spd_num.deactivate(self.text_z_spd_num.text, Color.lightgray)
         self.text_z_acc_num.deactivate(self.text_z_acc_num.text, Color.lightgray)
+        self.text_z_status_value.deactivate(self.text_z_status_value.text, Color.lightgray)
         
         self.radio_jog.deactivate()  
         self.entry_pick_1.disable()
@@ -732,6 +729,7 @@ class App(tk.Tk):
         self.text_z_pos_num.activate(self.text_z_pos_num.text, Color.blue)
         self.text_z_spd_num.activate(self.text_z_spd_num.text, Color.blue)
         self.text_z_acc_num.activate(self.text_z_acc_num.text, Color.blue)
+        self.text_z_status_value.activate(self.text_z_status_value.text, Color.blue)
 
         if not self.running and not self.homing and not self.jogging:
             self.radio_jog.activate()  
@@ -778,6 +776,7 @@ class App(tk.Tk):
         self.text_z_pos_num.change_text(self.protocol_z.z_axis_actual_pos)
         self.text_z_spd_num.change_text(self.protocol_z.z_axis_actual_spd)
         self.text_z_acc_num.change_text(self.protocol_z.z_axis_actual_acc)
+        self.text_z_status_value.change_text(self.protocol_z.z_axis_moving_status)
 
         # Moving Status
         if self.protocol_z.z_axis_moving_status == "Idle":
