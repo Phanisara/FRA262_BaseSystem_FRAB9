@@ -1,7 +1,6 @@
 import tkinter as tk
 import platform
 import time
-# from keyboard import Keyboard
 
 from components.color import Color
 from components.grid import Grid
@@ -240,7 +239,8 @@ class App(tk.Tk):
         self.dot_shelve_3 = None
         self.dot_shelve_4 = None
         self.dot_shelve_5 = None
-        self.finish_flag = 2
+        self.after_idle_flag = 0
+        self.finish_run_flag = 2
         self.press_run_flag = False
         
         self.bind("<Return>", self.out_entry)
@@ -783,12 +783,18 @@ class App(tk.Tk):
             # When finish moving
             if self.protocol_z.z_axis_moving_status_before != "Idle":
 
-                if (self.finish_flag == 0 or self.operation_mode == 'Point') and self.press_run_flag:
+                if (self.finish_run_flag == 0 or self.operation_mode == 'Point') and self.press_run_flag:
                     self.handle_finish_moving()
                     self.grid.delete_point(self.dot_point)
                     self.grid.delete_all_dots()
                     self.text_z_entry.set_text("0")
-                    self.finish_flag = 1
+                    self.finish_run_flag = 1
+                
+                if self.press_home.pressed == False:
+                    self.handle_finish_moving()
+                    self.grid.delete_point(self.dot_point)
+                    self.grid.delete_all_dots()
+                    self.text_z_entry.set_text("0")
 
                 if self.protocol_z.z_axis_moving_status_before == "Go Point":
                     self.running = False
@@ -799,11 +805,10 @@ class App(tk.Tk):
                 elif self.protocol_z.z_axis_moving_status_before == "Go Place":
                     self.homing = False
                 elif self.protocol_z.z_axis_moving_status_before == "Set Shelves":
-                    if self.mode == "Protocol" and self.operation_mode == "Jog" and self.finish_flag != 1:
+                    if self.mode == "Protocol" and self.operation_mode == "Jog" and self.finish_run_flag != 1:
                         self.protocol_z.read_Shelve_position()
-                        self.finish_flag = 0
+                        self.finish_run_flag = 0
                         self.handle_finish_moving()
-                        self.press_home.deactivate()
                         self.target_z_1 = self.protocol_z.shelve_1
                         self.target_x, self.target_z_1, self.dot_shelve_1 = self.grid.show_point(int(self.target_z_1), self.operation_mode)
                         
@@ -818,8 +823,8 @@ class App(tk.Tk):
                         
                         self.target_z_5 = self.protocol_z.shelve_5
                         self.target_x, self.target_z_5, self.dot_shelve_5 = self.grid.show_point(int(self.target_z_5), self.operation_mode)
-                    elif self.finish_flag == 1:
-                        self.finish_flag = 2                       
+                    elif self.finish_run_flag == 1:
+                        self.finish_run_flag = 2                       
 
                     self.jogging = False
                 self.protocol_z.z_axis_moving_status_before = "Idle"
