@@ -164,10 +164,10 @@ class App(tk.Tk):
         self.text_movement = TextBox(canvas=self.canvas_field, x=610, y=295, text="Movement", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
         self.toggle_movement   = ToggleButton(canvas=self.canvas_field, x=545, y=315, w=40, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="FORWARD", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="BACKWARD", font_name="Inter-Regular", text_size=font_size_button_small, on_default=False)
         
-        self.text_lead_switch_1 = TextBox(canvas=self.canvas_field, x=450, y=363, text="Lead Switch 1: ", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
-        self.text_lead_switch_2 = TextBox(canvas=self.canvas_field, x=590, y=363, text="Lead Switch 2: ", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
-        self.status_lead_switch_1 = TextBox(canvas=self.canvas_field, x=500, y=363,  text="OFF", font_name="Inter-Medium", font_size=font_size_detail, color=Color.gray, anchor="w")
-        self.status_lead_switch_2 = TextBox(canvas=self.canvas_field, x=640, y=363,  text="OFF", font_name="Inter-Medium", font_size=font_size_detail, color=Color.gray, anchor="w")
+        self.text_reed_switch_1 = TextBox(canvas=self.canvas_field, x=450, y=363, text="Reed Switch 1: ", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.text_reed_switch_2 = TextBox(canvas=self.canvas_field, x=590, y=363, text="Reed Switch 2: ", font_name="Inter-SemiBold", font_size=font_size_detail, color=Color.darkgray, anchor="center")
+        self.status_reed_switch_1 = TextBox(canvas=self.canvas_field, x=500, y=363,  text="OFF", font_name="Inter-Medium", font_size=font_size_detail, color=Color.gray, anchor="w")
+        self.status_reed_switch_2 = TextBox(canvas=self.canvas_field, x=640, y=363,  text="OFF", font_name="Inter-Medium", font_size=font_size_detail, color=Color.gray, anchor="w")
 
         self.line_seperate_2 = Line(canvas=self.canvas_field, point_1=(400, 387.5), point_2=(680, 387.5), width=1, color=Color.lightgray)
 
@@ -761,15 +761,15 @@ class App(tk.Tk):
         """ 
         
         # Actual Gripper 
-        if self.protocol_z.gripper_actual_lead1 == "1":  
-            self.status_lead_switch_1.change_text("ON", color=Color.blue)
+        if self.protocol_z.gripper_actual_reed1 == "1":  
+            self.status_reed_switch_1.change_text("ON", color=Color.blue)
         else:
-            self.status_lead_switch_1.change_text("OFF", color=Color.gray)
+            self.status_reed_switch_1.change_text("OFF", color=Color.gray)
 
-        if self.protocol_z.gripper_actual_lead2 == "1":
-            self.status_lead_switch_2.change_text("ON", color=Color.blue)
+        if self.protocol_z.gripper_actual_reed2 == "1":
+            self.status_reed_switch_2.change_text("ON", color=Color.blue)
         else:
-            self.status_lead_switch_2.change_text("OFF", color=Color.gray)
+            self.status_reed_switch_2.change_text("OFF", color=Color.gray)
             
         # Actual motion value
         self.text_x_pos_num.change_text(self.protocol_z.x_axis_actual_pos)
