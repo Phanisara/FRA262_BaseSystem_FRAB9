@@ -801,9 +801,9 @@ class App(tk.Tk):
                 elif self.protocol_z.z_axis_moving_status_before == "Home":
                     self.homing = False
                 elif self.protocol_z.z_axis_moving_status_before == "Go Pick":
-                    self.homing = False
+                    self.running = False
                 elif self.protocol_z.z_axis_moving_status_before == "Go Place":
-                    self.homing = False
+                    self.running = False
                 elif self.protocol_z.z_axis_moving_status_before == "Set Shelves":
                     if self.mode == "Protocol" and self.operation_mode == "Jog" and self.finish_run_flag != 1:
                         self.protocol_z.read_Shelve_position()
